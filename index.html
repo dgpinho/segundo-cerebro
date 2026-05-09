@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Segundo Cérebro — Diogo</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0f10;--bg2:#181819;--bg3:#202022;--bg4:#28282b;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--text:#eeebe5;--text2:#9a9690;--text3:#55524e;--accent:#c9a86c;--accent2:#a07c40;--red:#e05c4b;--green:#5aab7a;--blue:#5a8fcc;--purple:#8b70cc;--orange:#e0934b;--r:8px;--rmd:12px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;height:100vh;overflow:hidden;}
+.app{display:flex;height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:230px;min-width:230px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+.sb-logo{padding:1.25rem 1.1rem 1rem;border-bottom:1px solid var(--border);}
+.sb-logo h1{font-family:'DM Serif Display',serif;font-size:16px;color:var(--accent);}
+.sb-logo p{font-size:11px;color:var(--text3);margin-top:1px;}
+.sb-section{padding:.75rem 0 .25rem;}
+.sb-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:0 1.1rem .3rem;}
+.nav{display:flex;align-items:center;gap:9px;padding:6px 1.1rem;font-size:13px;color:var(--text2);cursor:pointer;transition:all .12s;border-left:2px solid transparent;}
+.nav:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+.nav.active{color:var(--accent);border-left-color:var(--accent);background:rgba(201,168,108,0.07);}
+.nav .ni{font-size:14px;width:16px;text-align:center;}
+.sb-footer{margin-top:auto;padding:.9rem 1.1rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);}
+.api-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);flex-shrink:0;}
+.api-dot.on{background:var(--green);}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:.75rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-title{font-family:'DM Serif Display',serif;font-size:17px;}
+.tb-date{font-size:11px;color:var(--text3);}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;font-size:12px;border-radius:var(--r);border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s;}
+.btn:hover{color:var(--text);background:rgba(255,255,255,0.04);}
+.btn-accent{background:var(--accent);color:#0f0f10;border-color:var(--accent);font-weight:500;}
+.btn-accent:hover{background:var(--accent2);border-color:var(--accent2);color:#0f0f10;}
+.btn-ghost{border-color:transparent;color:var(--text3);}
+.btn-ghost:hover{color:var(--text);background:rgba(255,255,255,0.04);border-color:var(--border);}
+.btn-danger{border-color:rgba(224,92,75,.3);color:var(--red);}
+.btn-danger:hover{background:rgba(224,92,75,.1);}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:1.4rem;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* CARDS & GRID */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rmd);padding:1.1rem 1.25rem;}
+.card-title{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.9rem;display:flex;align-items:center;gap:6px;}
+.ct-dot{width:5px;height:5px;border-radius:50%;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem;}
+.gap{margin-bottom:1rem;}
+
+/* METRICS */
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1rem;}
+.m-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+.m-val{font-family:'DM Serif Display',serif;font-size:26px;}
+.m-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+
+/* KANBAN */
+.kanban{display:flex;gap:.75rem;overflow-x:auto;padding-bottom:.5rem;margin-bottom:1rem;}
+.kb-col{min-width:240px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rmd);padding:.9rem;}
+.kb-col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
+.kb-col-title{font-size:11px;font-weight:500;display:flex;align-items:center;gap:6px;}
+.kb-col-count{font-size:10px;color:var(--text3);}
+.kb-status-dot{width:8px;height:8px;border-radius:50%;}
+.kb-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;margin-bottom:.6rem;cursor:pointer;transition:all .15s;}
+.kb-card:hover{border-color:var(--border2);background:var(--bg4);}
+.kb-card-name{font-size:13px;font-weight:500;margin-bottom:5px;}
+.kb-card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
+.kb-card-prog{height:3px;background:var(--border2);border-radius:2px;}
+.kb-card-fill{height:100%;border-radius:2px;}
+.kb-card-meta{font-size:10px;color:var(--text3);margin-top:5px;}
+
+/* TAGS/BADGES */
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;}
+.tag-cinema{background:rgba(139,112,204,.15);color:var(--purple);}
+.tag-producao{background:rgba(90,143,204,.15);color:var(--blue);}
+.tag-pessoal{background:rgba(201,168,108,.15);color:var(--accent);}
+.tag-saude{background:rgba(90,171,122,.15);color:var(--green);}
+.tag-casa{background:rgba(224,147,75,.15);color:var(--orange);}
+.tag-financas{background:rgba(224,92,75,.15);color:var(--red);}
+.tag-renda{background:rgba(90,171,122,.15);color:var(--green);}
+.priority-alta{color:var(--red);font-size:10px;}
+.priority-media{color:var(--orange);font-size:10px;}
+.priority-baixa{color:var(--text3);font-size:10px;}
+
+/* STATUS BADGES */
+.status-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;}
+.sb-fazendo{background:rgba(224,147,75,.15);color:var(--orange);}
+.sb-planejado{background:rgba(90,143,204,.15);color:var(--blue);}
+.sb-finalizado{background:rgba(90,171,122,.15);color:var(--green);}
+.sb-backlog{background:rgba(255,255,255,.07);color:var(--text3);}
+
+/* TASK ROWS */
+.task-row{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:1px solid var(--border);}
+.task-row:last-child{border-bottom:none;}
+.task-cb{width:15px;height:15px;border:1px solid var(--border2);border-radius:4px;flex-shrink:0;cursor:pointer;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.task-cb:hover{border-color:var(--accent);}
+.task-cb.done{background:var(--accent);border-color:var(--accent);}
+.task-cb.done::after{content:'✓';font-size:9px;color:#0f0f10;}
+.task-main{flex:1;}
+.task-name{font-size:13px;}
+.task-name.done{text-decoration:line-through;color:var(--text3);}
+.task-sub{font-size:11px;color:var(--text3);margin-top:1px;display:flex;gap:8px;flex-wrap:wrap;}
+.task-actions{display:flex;gap:4px;opacity:0;transition:opacity .12s;}
+.task-row:hover .task-actions{opacity:1;}
+.task-action-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px 4px;border-radius:4px;font-size:11px;}
+.task-action-btn:hover{color:var(--text);background:var(--bg4);}
+
+/* NOTES */
+.note-item{padding:8px 0;border-bottom:1px solid var(--border);}
+.note-item:last-child{border-bottom:none;}
+.note-name{font-size:13px;}
+.note-meta{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* RESOURCES */
+.res-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.res-item:last-child{border-bottom:none;}
+.res-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.res-name{font-size:13px;}
+.res-meta{font-size:11px;color:var(--text3);margin-top:1px;}
+.res-link{font-size:11px;color:var(--blue);text-decoration:none;}
+.res-link:hover{text-decoration:underline;}
+
+/* PROJECT DETAIL */
+.proj-detail-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;}
+.proj-detail-props{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem;}
+.proj-prog-bar{height:5px;background:var(--border2);border-radius:3px;margin-bottom:1.25rem;}
+.proj-prog-fill{height:100%;border-radius:3px;transition:width .5s;}
+.relations-row{display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.relation-chip{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);cursor:pointer;transition:all .12s;}
+.relation-chip:hover{border-color:var(--border2);}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-header{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
+.cal-day-name{font-size:10px;color:var(--text3);text-align:center;padding:4px 0;}
+.cal-day{min-height:60px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px;cursor:pointer;transition:background .12s;}
+.cal-day:hover{background:var(--bg4);}
+.cal-day.today{border-color:var(--accent);}
+.cal-day.other-month{opacity:.35;}
+.cal-day-num{font-size:11px;color:var(--text2);margin-bottom:2px;}
+.cal-day.today .cal-day-num{color:var(--accent);font-weight:500;}
+.cal-event{font-size:9px;background:rgba(201,168,108,.2);color:var(--accent);border-radius:3px;padding:1px 4px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cal-event.red{background:rgba(224,92,75,.2);color:var(--red);}
+.cal-event.blue{background:rgba(90,143,204,.2);color:var(--blue);}
+.cal-nav{display:flex;align-items:center;gap:12px;margin-bottom:1rem;}
+.cal-nav h3{font-family:'DM Serif Display',serif;font-size:16px;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rmd);width:100%;max-width:600px;max-height:85vh;overflow-y:auto;padding:1.5rem;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.modal-title{font-family:'DM Serif Display',serif;font-size:18px;}
+.modal-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:2px 6px;border-radius:4px;}
+.modal-close:hover{color:var(--text);background:var(--bg3);}
+.form-row{margin-bottom:1rem;}
+.form-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:5px;display:block;}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:8px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.form-input:focus{border-color:rgba(201,168,108,.4);}
+.form-input::placeholder{color:var(--text3);}
+.form-textarea{resize:vertical;min-height:80px;}
+.form-select{appearance:none;cursor:pointer;}
+.form-row-inline{display:flex;gap:.75rem;}
+.form-row-inline .form-row{flex:1;margin-bottom:0;}
+.subtask-list{margin-bottom:.5rem;}
+.subtask-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);}
+.subtask-item:last-child{border-bottom:none;}
+.subtask-item input[type=checkbox]{cursor:pointer;accent-color:var(--accent);}
+.subtask-item span{flex:1;font-size:13px;}
+.subtask-item .del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 4px;}
+.subtask-item .del-btn:hover{color:var(--red);}
+
+/* CHAT */
+.chat-wrap{border-top:1px solid var(--border);background:var(--bg2);flex-shrink:0;}
+.chat-msgs{max-height:320px;overflow-y:auto;padding:.75rem 1.4rem;display:flex;flex-direction:column;gap:8px;}
+.chat-msg{display:flex;gap:7px;}
+.chat-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;margin-top:2px;}
+.chat-msg.user .chat-avatar{background:var(--border2);color:var(--text2);}
+.chat-msg.ai .chat-avatar{background:rgba(201,168,108,.2);color:var(--accent);}
+.chat-bubble{background:var(--bg3);border-radius:8px;padding:7px 11px;font-size:13px;max-width:85%;line-height:1.5;}
+.chat-msg.user .chat-bubble{background:rgba(201,168,108,.1);}
+.chat-bar{display:flex;gap:8px;padding:.65rem 1.4rem;border-top:1px solid var(--border);align-items:center;}
+.chat-input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:8px 13px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.chat-input:focus{border-color:rgba(201,168,108,.4);}
+.chat-input::placeholder{color:var(--text3);}
+.loading{display:inline-flex;gap:3px;align-items:center;}
+.loading span{width:4px;height:4px;border-radius:50%;background:var(--accent);animation:ld 1s infinite;}
+.loading span:nth-child(2){animation-delay:.15s;}
+.loading span:nth-child(3){animation-delay:.3s;}
+@keyframes ld{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:2rem;color:var(--text3);font-size:13px;}
+
+/* INLINE EDIT */
+.editable{cursor:text;border-bottom:1px dashed transparent;transition:border-color .12s;}
+.editable:hover{border-bottom-color:var(--border2);}
+
+/* CADERNOS */
+.caderno-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rmd);padding:1rem;cursor:pointer;transition:all .15s;}
+.caderno-card:hover{border-color:var(--border2);background:var(--bg3);}
+.caderno-icon{font-size:20px;margin-bottom:6px;}
+.caderno-name{font-size:14px;font-weight:500;margin-bottom:3px;}
+.caderno-count{font-size:11px;color:var(--text3);}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:1rem 0;}
+
+/* FILTROS */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;align-items:center;}
+.filter-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;font-size:11px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s;}
+.filter-chip:hover{color:var(--text);border-color:var(--accent);}
+.filter-chip.active{background:rgba(201,168,108,.15);color:var(--accent);border-color:var(--accent);}
+.filter-chip.red.active{background:rgba(224,92,75,.15);color:var(--red);border-color:var(--red);}
+.filter-chip.blue.active{background:rgba(90,143,204,.15);color:var(--blue);border-color:var(--blue);}
+.filter-select{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--text2);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;}
+.filter-select:focus{border-color:var(--accent);}
+.filter-label{font-size:11px;color:var(--text3);}
+
+/* DRAG & DROP */
+.task-row{position:relative;}
+.task-row.dragging{opacity:.4;background:var(--bg4);}
+.task-row.drag-over{border-top:2px solid var(--accent);}
+.drag-handle{cursor:grab;color:var(--text3);padding:2px 4px;font-size:14px;flex-shrink:0;display:flex;align-items:center;}
+.drag-handle:hover{color:var(--text2);}
+.drag-handle:active{cursor:grabbing;}
+
+/* ORDENAÇÃO */
+.sort-bar{display:flex;gap:6px;align-items:center;margin-bottom:.5rem;flex-wrap:wrap;}
+.sort-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;font-size:11px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s;}
+.sort-chip:hover{color:var(--text2);border-color:var(--border2);}
+.sort-chip.active{color:var(--accent);border-color:var(--accent);background:rgba(201,168,108,.1);}
+
+/* PÁGINA NOTAS */
+.notes-page-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rmd);margin-bottom:1rem;overflow:hidden;}
+.notes-block-header{padding:.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);cursor:pointer;}
+.notes-block-header:hover{background:rgba(255,255,255,.02);}
+.notes-block-title{font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;}
+.notes-block-body{padding:.75rem 1.25rem;}
+
+/* QUICK ADD */
+.quick-add{display:flex;gap:6px;margin-top:.75rem;}
+.qa-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 11px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.qa-input:focus{border-color:rgba(201,168,108,.3);}
+.qa-input::placeholder{color:var(--text3);}
+
+/* MOBILE OVERLAY SIDEBAR */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49;}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:4px 8px;}
+.sidebar-close{display:none;background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px 8px;margin-left:auto;}
+
+@media(max-width:768px){
+  body{overflow:hidden;}
+  .app{flex-direction:column;}
+  .mobile-menu-btn{display:flex;align-items:center;}
+  .sidebar{position:fixed;left:-240px;top:0;bottom:0;z-index:50;transition:left .25s;width:240px;min-width:240px;}
+  .sidebar.open{left:0;}
+  .sidebar-overlay.open{display:block;}
+  .sidebar-close{display:flex;}
+  .sb-logo{display:flex;align-items:center;justify-content:space-between;}
+  .main{width:100%;height:100vh;}
+  .topbar{padding:.6rem 1rem;}
+  .tb-date{display:none;}
+  .tb-right .sync-info-wrap{display:none;}
+  .content{padding:1rem .75rem;}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr;}
+  .kanban{flex-direction:column;}
+  .kb-col{min-width:unset;}
+  .modal{margin:.5rem;max-height:92vh;}
+  .chat-wrap{position:sticky;bottom:0;}
+  .chat-msgs{max-height:220px;}
+  .form-row-inline{flex-direction:column;gap:.5rem;}
+  .topbar-title-wrap{flex:1;min-width:0;}
+  .tb-title{font-size:15px;}
+}
+</style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <h1>Segundo Cérebro</h1>
+    <p>Diogo Pinnho</p>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Principal</div>
+    <div class="nav active" onclick="goPage('dashboard',this)"><span class="ni">🏠</span><span>Dashboard</span></div>
+    <div class="nav" onclick="goPage('inbox',this)"><span class="ni">✏️</span><span>Entrada rápida</span></div>
+    <div class="nav" onclick="goPage('calendario',this)"><span class="ni">📅</span><span>Calendário</span></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">PARA</div>
+    <div class="nav" onclick="goPage('projetos',this)"><span class="ni">📁</span><span>Projetos</span></div>
+    <div class="nav" onclick="goPage('tarefas',this)"><span class="ni">✅</span><span>Tarefas</span></div>
+    <div class="nav" onclick="goPage('cadernos',this)"><span class="ni">📒</span><span>Cadernos</span></div>
+    <div class="nav" onclick="goPage('notas',this)"><span class="ni">📝</span><span>Notas</span></div>
+    <div class="nav" onclick="goPage('recursos',this)"><span class="ni">📚</span><span>Recursos</span></div>
+    <div class="nav" onclick="goPage('areas',this)"><span class="ni">🗂️</span><span>Áreas</span></div>
+    <div class="nav" onclick="goPage('arquivo',this)"><span class="ni">🗄️</span><span>Arquivo</span></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Sistema</div>
+    <div class="nav" onclick="goPage('settings',this)"><span class="ni">⚙️</span><span>Configurações</span></div>
+  </div>
+  <div class="sb-footer">
+    <div class="api-dot" id="api-dot"></div>
+    <span id="api-label">API não configurada</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-left">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title-wrap">
+        <span class="tb-title" id="page-title">Dashboard</span>
+        <span class="tb-date" id="tb-date"></span>
+      </div>
+    </div>
+    <div class="tb-right">
+      <span class="sync-info-wrap" style="font-size:11px;color:var(--text3)" id="sync-label">Nunca sincronizado</span>
+      <button class="btn" id="sync-main-btn" onclick="doSync()">🔄 Sync</button>
+      <button class="btn btn-accent" onclick="openQuickAdd()">+ Novo</button>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <div style="margin-bottom:1.25rem;">
+        <div style="font-family:'DM Serif Display',serif;font-size:24px;" id="greeting"></div>
+        <div style="font-size:13px;color:var(--text2);margin-top:3px;">Seu segundo cérebro está atualizado. Aqui está o resumo do dia.</div>
+      </div>
+      <div class="grid4 gap" id="dash-metrics"></div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title" style="justify-content:space-between;">
+            <span style="display:flex;align-items:center;gap:6px;"><div class="ct-dot" style="background:var(--red)"></div>Tarefas</span>
+          </div>
+          <div class="filter-bar" id="dash-task-filters">
+            <span class="filter-label">Filtrar:</span>
+            <button class="filter-chip active" onclick="setDashTaskFilter('all',this)">Todas</button>
+            <button class="filter-chip red" onclick="setDashTaskFilter('urgent',this)">🔴 Urgentes</button>
+            <button class="filter-chip" onclick="setDashTaskFilter('hoje',this)">📅 Hoje</button>
+            <button class="filter-chip blue" onclick="setDashTaskFilter('trabalho',this)">💼 Trabalho</button>
+            <button class="filter-chip" onclick="setDashTaskFilter('vida',this)">🏠 Vida</button>
+            <select class="filter-select" id="dash-area-filter" onchange="renderDashboard()">
+              <option value="">Área</option>
+              <option>Cinema</option><option>Produção de Vídeos</option><option>Pessoal</option>
+              <option>Saúde</option><option>Casa</option><option>Finanças</option>
+              <option>Relacionamento</option><option>Hobbies</option><option>Renda Extra</option>
+            </select>
+          </div>
+          <div class="sort-bar">
+            <span class="filter-label">Ordenar:</span>
+            <button class="sort-chip active" onclick="setSortOrder('manual',this,'dash')">↕ Manual</button>
+            <button class="sort-chip" onclick="setSortOrder('urgencia',this,'dash')">🔴 Urgência</button>
+            <button class="sort-chip" onclick="setSortOrder('data',this,'dash')">📅 Data</button>
+            <button class="sort-chip" onclick="setSortOrder('prioridade',this,'dash')">⬆ Prioridade</button>
+            <button class="sort-chip" onclick="setSortOrder('projeto',this,'dash')">📁 Projeto</button>
+          </div>
+          <div id="dash-tasks"></div>
+          <div class="quick-add">
+            <input class="qa-input" id="dash-new-task" placeholder="Nova tarefa rápida..." onkeydown="if(event.key==='Enter')quickAddTask()">
+            <button class="btn btn-accent" onclick="quickAddTask()">+</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="justify-content:space-between;">
+            <span style="display:flex;align-items:center;gap:6px;"><div class="ct-dot" style="background:var(--blue)"></div>Projetos</span>
+          </div>
+          <div class="filter-bar">
+            <button class="filter-chip active" onclick="setDashProjFilter('all',this)">Todos</button>
+            <button class="filter-chip" onclick="setDashProjFilter('Cinema',this)">🎬 Cinema</button>
+            <button class="filter-chip" onclick="setDashProjFilter('Produção de Vídeos',this)">📹 Produção</button>
+            <button class="filter-chip" onclick="setDashProjFilter('Pessoal',this)">👤 Pessoal</button>
+          </div>
+          <div id="dash-projects"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJETOS (KANBAN) -->
+    <div id="page-projetos" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;">Projetos</div>
+        <button class="btn btn-accent" onclick="openModal('project')">+ Novo projeto</button>
+      </div>
+      <div class="filter-bar">
+        <button class="filter-chip active" onclick="setProjFilter('all',this)">Todos</button>
+        <button class="filter-chip" onclick="setProjFilter('Fazendo',this)">🟡 Fazendo</button>
+        <button class="filter-chip" onclick="setProjFilter('Planejado',this)">🔵 Planejado</button>
+        <button class="filter-chip" onclick="setProjFilter('Finalizado',this)">🟢 Finalizado</button>
+        <select class="filter-select" id="proj-area-filter" onchange="renderKanban()">
+          <option value="">Área</option>
+          <option>Cinema</option><option>Produção de Vídeos</option><option>Pessoal</option><option>Saúde</option>
+        </select>
+      </div>
+      <div class="kanban" id="kanban-board"></div>
+    </div>
+
+    <!-- PROJECT DETAIL -->
+    <div id="page-project-detail" class="page">
+      <button class="btn btn-ghost" onclick="goPage('projetos',document.querySelector('[onclick*=projetos]'))" style="margin-bottom:1rem;">← Voltar a Projetos</button>
+      <div id="project-detail-content"></div>
+    </div>
+
+    <!-- TAREFAS -->
+    <div id="page-tarefas" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;">Tarefas</div>
+        <button class="btn btn-accent" onclick="openModal('task')">+ Nova tarefa</button>
+      </div>
+      <div class="filter-bar">
+        <button class="filter-chip active" data-tfilter="all" onclick="setTaskPageFilter('all',this)">Todas</button>
+        <button class="filter-chip red" data-tfilter="urgent" onclick="setTaskPageFilter('urgent',this)">🔴 Urgentes</button>
+        <button class="filter-chip" data-tfilter="pending" onclick="setTaskPageFilter('pending',this)">⏳ Pendentes</button>
+        <button class="filter-chip" data-tfilter="done" onclick="setTaskPageFilter('done',this)">✅ Concluídas</button>
+        <select class="filter-select" id="task-area-filter" onchange="renderTasksPage()">
+          <option value="">Área</option>
+          <option>Cinema</option><option>Produção de Vídeos</option><option>Pessoal</option>
+          <option>Saúde</option><option>Casa</option><option>Finanças</option>
+          <option>Relacionamento</option><option>Hobbies</option><option>Renda Extra</option>
+        </select>
+        <select class="filter-select" id="task-proj-filter" onchange="renderTasksPage()">
+          <option value="">Projeto</option>
+        </select>
+        <select class="filter-select" id="task-priority-filter" onchange="renderTasksPage()">
+          <option value="">Prioridade</option>
+          <option>Alta</option><option>Média</option><option>Baixa</option>
+        </select>
+      </div>
+      <div class="sort-bar">
+        <span class="filter-label">Ordenar:</span>
+        <button class="sort-chip active" onclick="setSortOrder('manual',this,'tasks')">↕ Manual</button>
+        <button class="sort-chip" onclick="setSortOrder('urgencia',this,'tasks')">🔴 Urgência</button>
+        <button class="sort-chip" onclick="setSortOrder('data',this,'tasks')">📅 Data</button>
+        <button class="sort-chip" onclick="setSortOrder('prioridade',this,'tasks')">⬆ Prioridade</button>
+        <button class="sort-chip" onclick="setSortOrder('projeto',this,'tasks')">📁 Projeto</button>
+      </div>
+      <div class="card" id="tasks-page-list"></div>
+    </div>
+
+    <!-- CADERNOS -->
+    <div id="page-cadernos" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;">Cadernos</div>
+        <button class="btn btn-accent" onclick="openModal('caderno')">+ Novo caderno</button>
+      </div>
+      <div class="grid3 gap" id="cadernos-grid"></div>
+    </div>
+
+    <!-- CADERNO DETAIL -->
+    <div id="page-caderno-detail" class="page">
+      <button class="btn btn-ghost" onclick="goPage('cadernos',document.querySelector('[onclick*=cadernos]'))" style="margin-bottom:1rem;">← Voltar a Cadernos</button>
+      <div id="caderno-detail-content"></div>
+    </div>
+
+    <!-- RECURSOS -->
+    <div id="page-recursos" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;">Recursos</div>
+        <button class="btn btn-accent" onclick="openModal('resource')">+ Novo recurso</button>
+      </div>
+      <div class="filter-bar">
+        <button class="filter-chip active" onclick="setResFilter('all',this)">Todos</button>
+        <button class="filter-chip" onclick="setResFilter('Livro',this)">📖 Livros</button>
+        <button class="filter-chip" onclick="setResFilter('Vídeo',this)">🎬 Vídeos</button>
+        <button class="filter-chip" onclick="setResFilter('Artigo',this)">📰 Artigos</button>
+        <button class="filter-chip" onclick="setResFilter('Curso',this)">🎓 Cursos</button>
+        <select class="filter-select" id="res-area-filter" onchange="renderRecursos()">
+          <option value="">Área</option>
+          <option>Cinema</option><option>Produção de Vídeos</option><option>Pessoal</option>
+          <option>Saúde</option><option>Casa</option><option>Finanças</option>
+        </select>
+      </div>
+      <div class="card" id="recursos-list"></div>
+    </div>
+
+    <!-- ÁREAS -->
+    <div id="page-areas" class="page">
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:1rem;">Áreas</div>
+      <div class="grid3 gap" id="areas-grid"></div>
+    </div>
+
+    <!-- CALENDÁRIO -->
+    <div id="page-calendario" class="page">
+      <div class="cal-nav">
+        <button class="btn btn-ghost" onclick="calPrev()">←</button>
+        <h3 id="cal-month-label"></h3>
+        <button class="btn btn-ghost" onclick="calNext()">→</button>
+        <button class="btn" onclick="calToday()" style="margin-left:auto;">Hoje</button>
+      </div>
+      <div class="cal-header" id="cal-header"></div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+
+    <!-- NOTAS -->
+    <div id="page-notas" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;">Notas</div>
+        <button class="btn btn-accent" onclick="openModal('note')">+ Nova nota</button>
+      </div>
+      <div class="filter-bar" id="notes-filters">
+        <span class="filter-label">Filtrar:</span>
+        <select class="filter-select" id="notes-caderno-filter" onchange="renderNotasPage()">
+          <option value="">Caderno</option>
+        </select>
+        <select class="filter-select" id="notes-proj-filter" onchange="renderNotasPage()">
+          <option value="">Projeto</option>
+        </select>
+        <select class="filter-select" id="notes-area-filter" onchange="renderNotasPage()">
+          <option value="">Área / Tag</option>
+          <option>Cinema</option><option>Produção de Vídeos</option><option>Pessoal</option>
+          <option>Saúde</option><option>Casa</option><option>Finanças</option>
+          <option>Roteiro</option><option>Pesquisa</option><option>Aprendizado</option><option>Ideia</option>
+        </select>
+        <input class="filter-select" id="notes-search" placeholder="🔍 Buscar..." oninput="renderNotasPage()" style="min-width:160px;">
+      </div>
+
+      <!-- Notas estruturadas -->
+      <div class="notes-page-block">
+        <div class="notes-block-header" onclick="toggleNotesBlock('structured')">
+          <div class="notes-block-title">📝 <span>Notas do sistema</span></div>
+          <span id="notes-structured-count" style="font-size:11px;color:var(--text3);"></span>
+        </div>
+        <div class="notes-block-body" id="notes-structured-body"></div>
+      </div>
+
+      <!-- Diário Vida -->
+      <div class="notes-page-block">
+        <div class="notes-block-header" onclick="toggleNotesBlock('vida')">
+          <div class="notes-block-title">📔 <span>Diário — Caderno da Vida</span></div>
+          <span style="font-size:11px;color:var(--text3);">Google Docs · sincronizado</span>
+        </div>
+        <div class="notes-block-body" id="notes-vida-body" style="display:none;"></div>
+      </div>
+
+      <!-- Diário Trabalho -->
+      <div class="notes-page-block">
+        <div class="notes-block-header" onclick="toggleNotesBlock('trabalho')">
+          <div class="notes-block-title">💼 <span>Diário — Caderno do Trabalho</span></div>
+          <span style="font-size:11px;color:var(--text3);">Google Docs · sincronizado</span>
+        </div>
+        <div class="notes-block-body" id="notes-trabalho-body" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ARQUIVO -->
+    <div id="page-arquivo" class="page">
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:1rem;">Arquivo</div>
+      <div class="card" id="arquivo-list"></div>
+    </div>
+
+    <!-- ENTRADA RÁPIDA -->
+    <div id="page-inbox" class="page">
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:.4rem;">Entrada rápida</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:1rem;">Jogue qualquer pensamento. A IA categoriza automaticamente.</div>
+      <div class="card gap">
+        <div class="form-row">
+          <label class="form-label">Caderno</label>
+          <select class="form-input form-select" id="inbox-caderno">
+            <option value="trabalho">💼 Caderno do Trabalho</option>
+            <option value="vida">📔 Caderno da Vida</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Nota (texto ou transcrição de áudio)</label>
+          <textarea class="form-input form-textarea" id="inbox-note" style="min-height:120px;" placeholder="Ex: Preciso agendar o nefrologista ainda essa semana&#10;Ex: Referência incrível para o Detox Digital — documentário The Social Dilemma&#10;Ex: Comprar presente para Anne até sexta, é urgente"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-accent" onclick="categorizeInbox()">✨ Categorizar com IA</button>
+          <button class="btn" onclick="document.getElementById('inbox-note').value=''">Limpar</button>
+        </div>
+        <div id="inbox-result" style="display:none;background:var(--bg3);border:1px solid rgba(201,168,108,.2);border-radius:var(--r);padding:1rem;margin-top:.75rem;font-size:13px;line-height:1.7;white-space:pre-wrap;"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="page-settings" class="page">
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:1rem;">Configurações</div>
+      <div class="card gap">
+        <div class="card-title"><div class="ct-dot" style="background:var(--accent)"></div>API Claude</div>
+        <div class="form-row">
+          <label class="form-label">Chave da API (salva só no seu navegador)</label>
+          <div style="display:flex;gap:8px;">
+            <input type="password" class="form-input" id="api-key-input" placeholder="sk-ant-api03-..." style="flex:1;">
+            <button class="btn btn-accent" onclick="saveApiKey()">Salvar</button>
+            <button class="btn" onclick="testApi()">Testar</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text3)" id="api-test-result"></div>
+      </div>
+      <div class="card gap">
+        <div class="card-title"><div class="ct-dot" style="background:var(--green)"></div>Google Drive — Sincronização</div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Conta Google</div>
+            <div class="setting-desc">Necessário para ler o Caderno da Vida e o Caderno do Trabalho</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span id="google-status" style="font-size:12px;color:var(--text3);">Não conectado</span>
+            <button class="btn" id="google-connect-btn" onclick="initGoogleAuth()">🔗 Conectar Google</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Caderno do Trabalho</div>
+            <div class="setting-desc" style="font-family:monospace;font-size:10px;">ID: 13d0b5FAKrUhLicpp8M5q_li-ExU_9BQsLJ8mtb7rxV</div>
+          </div>
+          <span style="font-size:11px;color:var(--green);">✓ Configurado</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Caderno da Vida</div>
+            <div class="setting-desc" style="font-family:monospace;font-size:10px;">ID: 1icKjfoIndRKj_VdUBCiGAHsOnjGGZXF-D2hiuouyzj8</div>
+          </div>
+          <span style="font-size:11px;color:var(--green);">✓ Configurado</span>
+        </div>
+      </div>
+
+      <div class="card gap">
+        <div class="card-title"><div class="ct-dot" style="background:var(--green)"></div>Dados importados do Notion</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:13px;">
+          <div>✅ Projetos: <strong id="count-proj">0</strong></div>
+          <div>✅ Tarefas: <strong id="count-tasks">0</strong></div>
+          <div>✅ Recursos: <strong id="count-res">0</strong></div>
+          <div>✅ Cadernos: <strong id="count-cad">0</strong></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><div class="ct-dot" style="background:var(--red)"></div>Zona de perigo</div>
+        <button class="btn btn-danger" onclick="if(confirm('Isso apaga todos os dados. Tem certeza?'))resetData()">🗑️ Resetar todos os dados</button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- CHAT -->
+  <div class="chat-wrap">
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="chat-bar">
+      <span style="font-size:15px;color:var(--accent)">✨</span>
+      <input class="chat-input" id="chat-input" placeholder="Pergunte ao seu segundo cérebro... Ex: Quais tarefas estão urgentes? / O que preciso fazer hoje?" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn btn-accent" onclick="sendChat()">↑</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" style="display:none;" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ============================================================
+// GOOGLE CONFIG
+// ============================================================
+const GOOGLE_CLIENT_ID = '574165633636-vcndtmm37cam07guv87spfuuctm632rb.apps.googleusercontent.com';
+const DOC_TRABALHO_ID = '13d0b5FAKrUhLicpp8M5q_li-ExU_9BQsLJ8mtb7rxV8';
+const DOC_VIDA_ID = '1icKjfoIndRKj_VdUBCiGAHsOnjGGZXF-D2hiuouyzj8';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/documents';
+let googleToken = null;
+let googleUser = null;
+
+function initGoogleAuth() {
+  if(typeof google === 'undefined') { setTimeout(initGoogleAuth, 500); return; }
+  google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: SCOPES,
+    callback: (resp) => {
+      if(resp.error) { console.error('Google auth error:', resp); return; }
+      googleToken = resp.access_token;
+      localStorage.setItem('sc_gtoken', googleToken);
+      updateGoogleStatus(true);
+      addMsg('ai', '✅ Google conectado! Carregando dados do Drive...');
+      loadFromDrive().then(loaded => {
+        if(loaded) {
+          renderDashboard();
+          addMsg('ai', '✅ Dados carregados do Google Drive! Segundo cérebro sincronizado.');
+        } else {
+          addMsg('ai', '✅ Google conectado! Drive pronto — seus dados serão salvos automaticamente.');
+        }
+      });
+    }
+  }).requestAccessToken();
+}
+
+function updateGoogleStatus(connected) {
+  const el = document.getElementById('google-status');
+  const btn = document.getElementById('google-connect-btn');
+  if(el) el.textContent = connected ? '✅ Conectado' : 'Não conectado';
+  if(btn) btn.textContent = connected ? '🔄 Reconectar Google' : '🔗 Conectar Google';
+  const syncBtn = document.getElementById('sync-main-btn');
+  if(syncBtn) syncBtn.disabled = !connected;
+}
+
+async function fetchDocContent(docId) {
+  if(!googleToken) throw new Error('Não autenticado no Google');
+  const res = await fetch(`https://docs.googleapis.com/v1/documents/${docId}`, {
+    headers: { Authorization: `Bearer ${googleToken}` }
+  });
+  if(!res.ok) {
+    if(res.status === 401) { googleToken = null; updateGoogleStatus(false); throw new Error('Token expirado — reconecte o Google'); }
+    throw new Error(`Erro ao ler doc: ${res.status}`);
+  }
+  const data = await res.json();
+  // Extrair texto do doc
+  let text = '';
+  if(data.body && data.body.content) {
+    for(const block of data.body.content) {
+      if(block.paragraph) {
+        for(const el of block.paragraph.elements||[]) {
+          if(el.textRun) text += el.textRun.content;
+        }
+      }
+    }
+  }
+  return text;
+}
+
+async function markProcessedInDoc(docId, entries) {
+  if(!googleToken || !entries.length) return;
+  // Busca o doc para pegar o endIndex atual
+  const res = await fetch(`https://docs.googleapis.com/v1/documents/${docId}`, {
+    headers: { Authorization: `Bearer ${googleToken}` }
+  });
+  const data = await res.json();
+  // Adiciona marcação no final do doc
+  const ts = new Date().toLocaleDateString('pt-BR');
+  const marker = '\n\n--- PROCESSADO EM ' + ts + ' ---\n' + entries.map(e=>'OK: ' + e).join('\n') + '\n';
+  await fetch(`https://docs.googleapis.com/v1/documents/${docId}:batchUpdate`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${googleToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requests: [{
+        insertText: {
+          location: { index: data.body.content[data.body.content.length-1].endIndex - 1 },
+          text: marker
+        }
+      }]
+    })
+  });
+}
+
+async function doSync() {
+  if(!googleToken) { initGoogleAuth(); return; }
+  const el = document.getElementById('sync-label');
+  const btn = document.getElementById('sync-main-btn');
+  el.textContent = 'Lendo cadernos...';
+  if(btn) btn.disabled = true;
+
+  try {
+    // Ler os dois docs
+    const [textoTrabalho, textoVida] = await Promise.all([
+      fetchDocContent(DOC_TRABALHO_ID),
+      fetchDocContent(DOC_VIDA_ID)
+    ]);
+
+    // Salvar conteúdo bruto nos cadernos diário
+    const diarioVida = DB.cadernos.find(c=>c.id==='c0');
+    const diarioTrabalho = DB.cadernos.find(c=>c.id==='c0t');
+    if(diarioVida) diarioVida.diaryContent = textoVida;
+    if(diarioTrabalho) diarioTrabalho.diaryContent = textoTrabalho;
+    saveDB();
+
+    el.textContent = 'IA categorizando...';
+
+    // Filtrar só linhas não processadas
+    const linhasTrabalho = textoTrabalho.split('\n').filter(l => l.trim() && !l.includes('OK:') && !l.includes('--- PROCESSADO'));
+    const linhasVida = textoVida.split('\n').filter(l => l.trim() && !l.includes('OK:') && !l.includes('--- PROCESSADO'));
+
+    if(!linhasTrabalho.length && !linhasVida.length) {
+      el.textContent = 'Nada novo para sincronizar';
+      if(btn) btn.disabled = false;
+      addMsg('ai', 'Nenhuma entrada nova encontrada nos cadernos. Tudo já foi processado!');
+      return;
+    }
+
+    const prompt = `Você é o assistente do segundo cérebro de Diogo Pinnho. Analise as notas abaixo dos seus cadernos e retorne um JSON array (somente JSON puro, sem markdown).
+
+Projetos ativos: ${JSON.stringify(DB.projects.filter(p=>p.status!=='Finalizado').map(p=>p.name))}
+Áreas: ${JSON.stringify(AREAS_LIST)}
+Cadernos: ${JSON.stringify(DB.cadernos.map(c=>c.name))}
+
+Para cada entrada relevante, retorne um objeto com:
+{
+  "tipo": "tarefa" | "nota" | "evento" | "recurso" | "ignorar",
+  "nome": "título curto",
+  "urgente": true | false,
+  "prioridade": "Alta" | "Média" | "Baixa",
+  "area": "área correspondente",
+  "projeto": "nome exato do projeto ou ''",
+  "caderno": "nome exato do caderno ou ''",
+  "conteudo": "conteúdo completo",
+  "data": "data mencionada no formato YYYY-MM-DD ou ''",
+  "fonte": "trabalho" | "vida"
+}
+
+Regras:
+- FIXADOS/datas futuras → tipo: evento (salvar como nota com data)
+- "preciso", "fazer", "levar", "comprar", "molhar", "call" → tipo: tarefa
+- Informações, acontecimentos, registros passados → tipo: nota
+- Links, livros, filmes → tipo: recurso
+- Linhas muito curtas sem sentido isolado → tipo: ignorar
+- Detecte urgência: "hoje", "amanhã", "quanto antes"
+- Preserve informações completas no campo conteudo
+
+CADERNO DO TRABALHO:
+${linhasTrabalho.slice(0,40).join('\n')}
+
+CADERNO DA VIDA:
+${linhasVida.slice(0,40).join('\n')}
+
+Retorne apenas o JSON array, sem texto antes ou depois.`;
+
+    await callClaude(prompt, async (text) => {
+      try {
+        let clean = text.replace(/```json|```/g,'').trim();
+        // Garantir que o JSON está completo — se cortado, fechar o array
+        if(!clean.endsWith(']')) {
+          const lastComplete = clean.lastIndexOf('},');
+          if(lastComplete > 0) clean = clean.slice(0, lastComplete+1) + ']';
+          else clean = '[]';
+        }
+        const items = JSON.parse(clean);
+        let criados = { tarefas: 0, notas: 0, eventos: 0, recursos: 0 };
+        const processadosTrabalho = [];
+        const processadosVida = [];
+
+        for(const item of items) {
+          if(item.tipo === 'ignorar') continue;
+          const proj = DB.projects.find(p=>p.name===item.projeto);
+          const cad = DB.cadernos.find(c=>c.name===item.caderno);
+
+          if(item.tipo === 'tarefa') {
+            const t = {id:uid(),name:item.nome,done:false,urgent:item.urgente||false,priority:item.prioridade||'Média',projectId:proj?proj.id:'',area:item.area||'Pessoal',dueDate:item.data||'',subtasks:[],notes:item.conteudo||'',attachments:[]};
+            DB.tasks.push(t);
+            if(proj) proj.taskIds.push(t.id);
+            criados.tarefas++;
+          } else if(item.tipo === 'nota' || item.tipo === 'evento') {
+            const n = {id:uid(),name:item.nome,content:item.conteudo||item.nome,cadernoId:cad?cad.id:'',projectId:proj?proj.id:'',tags:[item.area||'Pessoal'],date:item.data||new Date().toISOString().slice(0,10)};
+            DB.notes.push(n);
+            if(cad) cad.noteIds.push(n.id);
+            if(proj) proj.noteIds.push(n.id);
+            criados.notas++;
+          } else if(item.tipo === 'recurso') {
+            DB.resources.push({id:uid(),name:item.nome,type:'Outro',area:item.area||'Pessoal',link:'',desc:item.conteudo||'',projectIds:[],noteIds:[],internalNotes:[]});
+            criados.recursos++;
+          }
+
+          if(item.fonte === 'trabalho') processadosTrabalho.push(item.nome);
+          else processadosVida.push(item.nome);
+        }
+
+        saveDB();
+
+        // Marcar como processado nos docs
+        await Promise.all([
+          markProcessedInDoc(DOC_TRABALHO_ID, processadosTrabalho),
+          markProcessedInDoc(DOC_VIDA_ID, processadosVida)
+        ]);
+
+        renderDashboard();
+        const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+        el.textContent = `Sincronizado às ${now}`;
+        if(btn) btn.disabled = false;
+
+        const resumo = `✅ **Sincronização concluída!**
+
+- 📋 Tarefas criadas: **${criados.tarefas}**
+- 📝 Notas criadas: **${criados.notas}**
+- 📚 Recursos criados: **${criados.recursos}**
+
+Entradas processadas foram marcadas nos seus docs Google.`;
+        addMsg('ai', resumo);
+
+      } catch(e) {
+        el.textContent = 'Erro na sincronização';
+        if(btn) btn.disabled = false;
+        addMsg('ai', '❌ Erro ao processar: ' + e.message);
+      }
+    });
+
+  } catch(e) {
+    el.textContent = 'Erro: ' + e.message;
+    if(btn) btn.disabled = false;
+    addMsg('ai', '❌ ' + e.message);
+  }
+}
+
+const DRIVE_FILE_NAME = 'segundo-cerebro-db.json';
+let driveFileId = null;
+
+async function saveToDrive() {
+  if(!googleToken) return;
+  try {
+    const body = JSON.stringify(DB);
+    if(driveFileId) {
+      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${googleToken}`, 'Content-Type': 'application/json' },
+        body
+      });
+    } else {
+      const search = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${DRIVE_FILE_NAME}'&spaces=drive&fields=files(id)`, {
+        headers: { Authorization: `Bearer ${googleToken}` }
+      });
+      const sd = await search.json();
+      if(sd.files && sd.files.length > 0) {
+        driveFileId = sd.files[0].id;
+        await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`, {
+          method: 'PATCH',
+          headers: { Authorization: `Bearer ${googleToken}`, 'Content-Type': 'application/json' },
+          body
+        });
+      } else {
+        const meta = await fetch('https://www.googleapis.com/drive/v3/files', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${googleToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: DRIVE_FILE_NAME, mimeType: 'application/json' })
+        });
+        const md = await meta.json();
+        driveFileId = md.id;
+        await fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`, {
+          method: 'PATCH',
+          headers: { Authorization: `Bearer ${googleToken}`, 'Content-Type': 'application/json' },
+          body
+        });
+      }
+    }
+    localStorage.setItem('sc_drive_file_id', driveFileId);
+  } catch(e) { console.warn('Drive save error:', e); }
+}
+
+async function loadFromDrive() {
+  if(!googleToken) return false;
+  try {
+    const savedId = localStorage.getItem('sc_drive_file_id');
+    let fileId = savedId;
+    if(!fileId) {
+      const search = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${DRIVE_FILE_NAME}'&spaces=drive&fields=files(id)`, {
+        headers: { Authorization: `Bearer ${googleToken}` }
+      });
+      const sd = await search.json();
+      if(sd.files && sd.files.length > 0) fileId = sd.files[0].id;
+    }
+    if(!fileId) return false;
+    driveFileId = fileId;
+    localStorage.setItem('sc_drive_file_id', fileId);
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+      headers: { Authorization: `Bearer ${googleToken}` }
+    });
+    if(!res.ok) return false;
+    const data = await res.json();
+    DB = data;
+    saveDB();
+    return true;
+  } catch(e) { console.warn('Drive load error:', e); return false; }
+}
+
+
+// ============================================================
+// DATABASE
+// ============================================================
+const AREAS_LIST = ['Cinema','Produção de Vídeos','Pessoal','Saúde','Casa','Finanças','Relacionamento','Hobbies','Renda Extra'];
+const AREA_TAGS = {Cinema:'cinema','Produção de Vídeos':'producao',Pessoal:'pessoal',Saúde:'saude',Casa:'casa',Finanças:'financas',Relacionamento:'pessoal',Hobbies:'pessoal','Renda Extra':'renda'};
+const STATUS_LIST = ['Backlog','Planejado','Fazendo','Finalizado'];
+const PRIORITY_LIST = ['Alta','Média','Baixa'];
+const RES_TYPES = ['Livro','Vídeo','Artigo','Curso','Roteiro','Pasta','Filme/Série','Material de trabalho','Outro'];
+const TYPE_ICONS = {Livro:'📖',Vídeo:'🎬',Artigo:'📰',Curso:'🎓',Roteiro:'📝',Pasta:'📂','Filme/Série':'🎥','Material de trabalho':'📄',Outro:'📌'};
+
+let DB = {
+  projects: [],
+  tasks: [],
+  resources: [],
+  cadernos: [],
+  notes: [],
+  areas: AREAS_LIST.map((n,i)=>({id:'a'+i,name:n})),
+};
+
+let apiKey = '';
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let msgId = 0;
+
+// ============================================================
+// SEED DATA (Notion migration)
+// ============================================================
+function seedData() {
+  DB.projects = [
+    {id:'p1',name:'Roteiro de longa: Agência de Desinformação',status:'Fazendo',areas:['Cinema'],progress:0.6,desc:'Argumento e pesquisa em andamento. Foco em gentrificação e fake news.',startDate:'2024-11-05',endDate:'',cadernos:['c3'],taskIds:['t1','t2','t3'],resourceIds:['r3','r4','r8'],noteIds:['n1','n2'],color:'#8b70cc'},
+    {id:'p2',name:'Roteiro de curta: Detox Digital',status:'Fazendo',areas:['Cinema'],progress:0.43,desc:'Roteiro v2 em andamento. Pesquisa sobre ditadura militar e golpe de 2022.',startDate:'2025-01-31',endDate:'',cadernos:['c2'],taskIds:['t4','t5','t6','t7'],resourceIds:['r5','r9','r13'],noteIds:['n3'],color:'#5a8fcc'},
+    {id:'p3',name:'Roteiro de curta: O Coach / Meritocracia',status:'Planejado',areas:['Cinema'],progress:0,desc:'Pesquisa inicial sobre coachs charlatões e ilusão da meritocracia.',startDate:'2025-12-16',endDate:'',cadernos:['c1'],taskIds:['t8','t9'],resourceIds:['r11','r12'],noteIds:[],color:'#c9a86c'},
+    {id:'p4',name:'Produção de curta: Depois vem o Silêncio',status:'Fazendo',areas:['Cinema'],progress:0.9,desc:'Inscrições em festivais. Quase finalizado.',startDate:'',endDate:'',cadernos:[],taskIds:['t10','t11'],resourceIds:[],noteIds:[],color:'#5aab7a'},
+    {id:'p5',name:'Mapec - Lançamento Anna Flores',status:'Fazendo',areas:['Produção de Vídeos'],progress:0.43,desc:'Edições em andamento — 7 vídeos no total.',startDate:'2025-11-01',endDate:'',cadernos:[],taskIds:['t12'],resourceIds:[],noteIds:[],color:'#e05c4b'},
+    {id:'p6',name:'Saindo da Inércia',status:'Planejado',areas:['Pessoal','Saúde','Renda Extra'],progress:0.375,desc:'Planejamento de saúde, finanças, relacionamentos, sonhos e objetivos.',startDate:'2026-01-01',endDate:'',cadernos:[],taskIds:['t13','t14','t15'],resourceIds:[],noteIds:[],color:'#5aab7a'},
+    {id:'p7',name:'Casamento',status:'Finalizado',areas:['Pessoal'],progress:1,desc:'Concluído em abril de 2025.',startDate:'2024-11-20',endDate:'2025-04-12',cadernos:[],taskIds:[],resourceIds:[],noteIds:[],color:'#9a9690'},
+    {id:'p8',name:'Curta: Agência de Desinformação',status:'Finalizado',areas:['Cinema'],progress:1,desc:'Concluído em janeiro de 2025. Inscrito no Curto Criativo.',startDate:'2024-09-19',endDate:'2025-01-31',cadernos:[],taskIds:[],resourceIds:[],noteIds:[],color:'#9a9690'},
+  ];
+
+  DB.tasks = [
+    {id:'t1',name:'Argumento - 1º Tratamento (AD)',done:false,urgent:false,priority:'Alta',projectId:'p1',area:'Cinema',dueDate:'',subtasks:[{id:'st1',name:'Estruturar arco do protagonista',done:false},{id:'st2',name:'Definir antagonista',done:false}],notes:'',attachments:[]},
+    {id:'t2',name:'Pesquisa 1 — Cracolândia / gentrificação',done:false,urgent:false,priority:'Alta',projectId:'p1',area:'Cinema',dueDate:'',subtasks:[],notes:'Referência principal: vídeo Arquitetura da Expulsão',attachments:[]},
+    {id:'t3',name:'Roteiro - 1º Tratamento (AD)',done:false,urgent:false,priority:'Média',projectId:'p1',area:'Cinema',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t4',name:'DD - Lista de grandes eventos v2',done:false,urgent:false,priority:'Média',projectId:'p2',area:'Cinema',dueDate:'2025-12-17',subtasks:[],notes:'',attachments:[]},
+    {id:'t5',name:'DD - Argumento v1',done:false,urgent:false,priority:'Alta',projectId:'p2',area:'Cinema',dueDate:'2025-12-19',subtasks:[],notes:'',attachments:[]},
+    {id:'t6',name:'DD - Roteiro v1',done:false,urgent:false,priority:'Alta',projectId:'p2',area:'Cinema',dueDate:'2025-12-22',subtasks:[],notes:'',attachments:[]},
+    {id:'t7',name:'Pesquisa - Arquitetura do golpe de 2022',done:false,urgent:false,priority:'Média',projectId:'p2',area:'Cinema',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t8',name:'OC: Pesquisa — impacto de coachs charlatões',done:false,urgent:false,priority:'Baixa',projectId:'p3',area:'Cinema',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t9',name:'OC: Pesquisa — ilusão da meritocracia',done:false,urgent:false,priority:'Baixa',projectId:'p3',area:'Cinema',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t10',name:'Inscrições em festivais (DVS)',done:false,urgent:false,priority:'Alta',projectId:'p4',area:'Cinema',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t11',name:'Trailer DVS',done:false,urgent:false,priority:'Média',projectId:'p4',area:'Cinema',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t12',name:'Edições pendentes — Mapec (vídeos 3, 4)',done:false,urgent:true,priority:'Alta',projectId:'p5',area:'Produção de Vídeos',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t13',name:'Agendar nutricionista',done:false,urgent:true,priority:'Alta',projectId:'p6',area:'Saúde',dueDate:'',subtasks:[],notes:'Nutricionista: Gabriel Banzinni',attachments:[]},
+    {id:'t14',name:'Agendar nefrologista',done:false,urgent:true,priority:'Alta',projectId:'p6',area:'Saúde',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t15',name:'Planejamento financeiro pessoal',done:false,urgent:false,priority:'Média',projectId:'p6',area:'Finanças',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t16',name:'Financeiro OSF — lançamentos retroativos',done:false,urgent:true,priority:'Alta',projectId:'',area:'Produção de Vídeos',dueDate:'2026-01-30',subtasks:[],notes:'',attachments:[]},
+    {id:'t17',name:'Regar as plantas',done:false,urgent:false,priority:'Baixa',projectId:'',area:'Casa',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t18',name:'Lavar louça',done:false,urgent:false,priority:'Baixa',projectId:'',area:'Casa',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t19',name:'Lavar roupas de cama',done:false,urgent:false,priority:'Baixa',projectId:'',area:'Casa',dueDate:'',subtasks:[],notes:'',attachments:[]},
+    {id:'t20',name:'Estruturar fluxos de gestão da vida',done:false,urgent:false,priority:'Média',projectId:'',area:'Pessoal',dueDate:'',subtasks:[],notes:'',attachments:[]},
+  ];
+
+  DB.resources = [
+    {id:'r1',name:'Story — Robert McKee',type:'Livro',area:'Cinema',link:'',desc:'Estrutura e princípios da escrita de roteiro.',projectIds:['p1','p8'],noteIds:[]},
+    {id:'r2',name:'O poder do ator — Ivana Chubbuck',type:'Livro',area:'Cinema',link:'',desc:'Técnica de atuação e direção de atores.',projectIds:[],noteIds:[]},
+    {id:'r3',name:'A Máquina do Ódio — Patrícia Campos Mello',type:'Livro',area:'Cinema',link:'',desc:'Fake news e violência digital. Pesquisa para AD.',projectIds:['p1'],noteIds:[]},
+    {id:'r4',name:'Arquitetura da Expulsão: Cracolândia',type:'Vídeo',area:'Cinema',link:'https://www.youtube.com/watch?v=aiwBZu75meQ',desc:'Gentrificação da Cracolândia. Grande projeto para o longa AD.',projectIds:['p1'],noteIds:[]},
+    {id:'r5',name:'Como as democracias morrem — Steve Levitsky',type:'Livro',area:'Cinema',link:'',desc:'Pesquisa para Detox Digital.',projectIds:['p2'],noteIds:[]},
+    {id:'r6',name:'Perfil de personagem — Narratologia',type:'Vídeo',area:'Cinema',link:'https://www.youtube.com/watch?v=bdJJEjHruAo',desc:'Desenvolvimento de protagonista.',projectIds:[],noteIds:[]},
+    {id:'r7',name:'Como escrever um roteiro — Narratologia',type:'Vídeo',area:'Cinema',link:'https://www.youtube.com/watch?v=e7lhKGFlHr0',desc:'Passo a passo do roteiro audiovisual.',projectIds:[],noteIds:[]},
+    {id:'r8',name:'Tudo o que você precisou desaprender — Meteoro Brasil',type:'Livro',area:'Cinema',link:'',desc:'Pesquisa para Agência de Desinformação.',projectIds:['p1'],noteIds:[]},
+    {id:'r9',name:'PF indicia Bolsonaro — golpe de Estado',type:'Vídeo',area:'Cinema',link:'https://www.youtube.com/watch?v=SYfrJzor2TE',desc:'Referência para Detox Digital.',projectIds:['p2'],noteIds:[]},
+    {id:'r10',name:'Além do Roteiro: roteiros e bíblias para estudo',type:'Pasta',area:'Cinema',link:'https://drive.google.com/drive/folders/14NXBDTC_N3NpqBstbKZBTUyzlPlDrlH_',desc:'Roteiros para referência e estudo.',projectIds:[],noteIds:[]},
+    {id:'r11',name:'Direita radical explora ressentimento — BBC',type:'Artigo',area:'Cinema',link:'https://www.bbc.com/portuguese/articles/c0r70rvznzyo',desc:'Pesquisa para O Coach / Meritocracia.',projectIds:['p3'],noteIds:[]},
+    {id:'r12',name:'Como o capitalismo matou os hobbies',type:'Vídeo',area:'Cinema',link:'https://youtu.be/L_n4dPXvyzQ',desc:'Pesquisa para O Coach / Meritocracia.',projectIds:['p3'],noteIds:[]},
+    {id:'r13',name:'Lembrar é resistir: 40 anos da invasão da PUC-SP',type:'Artigo',area:'Cinema',link:'https://j.pucsp.br/noticia/lembrar-e-resistir-40-anos-da-invasao-da-puc-sp',desc:'Ditadura militar. Pesquisa para Detox Digital.',projectIds:['p2'],noteIds:[]},
+    {id:'r14',name:'Filmmaker Pro — Daniel Marvel',type:'Curso',area:'Produção de Vídeos',link:'https://filmmakerpropordanielmarvel.club.hotmart.com/t',desc:'Portfólio e posicionamento de mercado.',projectIds:[],noteIds:[]},
+    {id:'r15',name:'Segundo Cérebro — Tiago Forte',type:'Livro',area:'Pessoal',link:'',desc:'Metodologia PARA. Base deste sistema.',projectIds:[],noteIds:[]},
+    {id:'r16',name:'Relatório de Sustentabilidade 2024 — HPP',type:'Material de trabalho',area:'Produção de Vídeos',link:'https://pequenoprincipe.org.br/relatoriodesustentabilidadeweb2024/cpp_relatorio_de_sustentabilidade_2024_pt.pdf',desc:'Referência para projeto HPP.',projectIds:[],noteIds:[]},
+  ];
+
+  DB.cadernos = [
+    {id:'c0',name:'📅 Diário — Caderno da Vida',icon:'📅',desc:'Espelho fiel do Caderno da Vida. Atualizado automaticamente a cada sincronização.',area:'Pessoal',noteIds:[],projectIds:[],isDiary:true,diaryContent:''},
+    {id:'c0t',name:'💼 Diário — Caderno do Trabalho',icon:'💼',desc:'Espelho fiel do Caderno do Trabalho. Atualizado automaticamente a cada sincronização.',area:'Produção de Vídeos',noteIds:[],projectIds:[],isDiary:true,diaryContent:''},
+    {id:'c1',name:'Curta: Meritocracia / O Coach',icon:'🎬',desc:'Ideias, referências e pesquisa para o curta sobre meritocracia.',area:'Cinema',noteIds:['n4','n5'],projectIds:['p3']},
+    {id:'c2',name:'Curta: Detox Digital',icon:'📱',desc:'Notas, pesquisa e caderno de direção do curta Detox Digital.',area:'Cinema',noteIds:['n3','n6'],projectIds:['p2']},
+    {id:'c3',name:'Longa: Agência de Desinformação',icon:'📰',desc:'Tudo sobre o longa — pesquisa, sinopse, grandes eventos, personagens.',area:'Cinema',noteIds:['n1','n2','n7'],projectIds:['p1']},
+    {id:'c4',name:'Guia — Escrevendo Roteiros',icon:'✍️',desc:'Aprendizados e guias gerais sobre escrita de roteiros audiovisuais.',area:'Cinema',noteIds:['n8'],projectIds:[]},
+    {id:'c5',name:'Hospital Pequeno Príncipe (HPP)',icon:'🏥',desc:'Notas sobre o trabalho e projetos no HPP.',area:'Produção de Vídeos',noteIds:['n9'],projectIds:[]},
+  ];
+
+  DB.notes = [
+    {id:'n1',name:'AD — Premissa / Logline v1',content:'Projeto trata de como a desinformação pode destruir uma comunidade.',cadernoId:'c3',projectId:'p1',tags:['Roteiro','Cinema'],date:'2024-11-07'},
+    {id:'n2',name:'AD — Lista de grandes eventos + Sinopse Longa',content:'Lista dos 10 grandes eventos do longa. Sinopse de 2 páginas concluída.',cadernoId:'c3',projectId:'p1',tags:['Roteiro','Cinema'],date:'2024-11-19'},
+    {id:'n3',name:'DD — Caderno da Direção',content:'Notas de direção para o curta Detox Digital. Referências visuais e tom narrativo.',cadernoId:'c2',projectId:'p2',tags:['Direção','Cinema'],date:'2025-01-15'},
+    {id:'n4',name:'Meritocracia — Banco de Ideias',content:'Como ficar milionário em 6 meses. O charlatanismo disfarçado de autoajuda.',cadernoId:'c1',projectId:'p3',tags:['Ideia','Cinema'],date:'2025-12-16'},
+    {id:'n5',name:'OC — Argumento v2',content:'Argumento revisado do curta O Coach. Protagonista descobre que o coach que seguiu é um golpista.',cadernoId:'c1',projectId:'p3',tags:['Roteiro'],date:'2026-01-10'},
+    {id:'n6',name:'DD — Lista de grandes eventos v1',content:'Eventos que estruturam o curta Detox Digital do início ao fim.',cadernoId:'c2',projectId:'p2',tags:['Roteiro'],date:'2025-01-20'},
+    {id:'n7',name:'Pesquisa — Agência de Desinformação',content:'Pesquisa inicial sobre o projeto principal de gestão de crises.',cadernoId:'c3',projectId:'p1',tags:['Pesquisa'],date:'2024-12-01'},
+    {id:'n8',name:'Principais aprendizados — Story (Robert McKee)',content:'Notas do livro Story: estrutura de 3 atos, beats, cenas, climax.',cadernoId:'c4',projectId:'',tags:['Aprendizado','Roteiro'],date:'2024-10-01'},
+    {id:'n9',name:'Relatório de Sustentabilidade + Prestação de Contas HPP',content:'Documentos para o projeto IFPJ do Hospital Pequeno Príncipe.',cadernoId:'c5',projectId:'',tags:['HPP','Trabalho'],date:'2025-03-01'},
+  ];
+}
+
+// ============================================================
+// PERSISTENCE
+// ============================================================
+function saveDB() { localStorage.setItem('sc_db_v2', JSON.stringify(DB)); saveToDrive(); }
+function loadDB() {
+  const saved = localStorage.getItem('sc_db_v2');
+  if (saved) { try { DB = JSON.parse(saved); } catch(e) { seedData(); saveDB(); } }
+  else { seedData(); saveDB(); }
+  apiKey = localStorage.getItem('sc_api') || '';
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function uid() { return '_'+Math.random().toString(36).slice(2,9); }
+function fmt(d) { if(!d) return '—'; const dt=new Date(d+'T12:00:00'); return dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}); }
+function isOverdue(d) { if(!d) return false; return new Date(d+'T12:00:00') < new Date(); }
+function getProject(id) { return DB.projects.find(p=>p.id===id); }
+function getTask(id) { return DB.tasks.find(t=>t.id===id); }
+function getResource(id) { return DB.resources.find(r=>r.id===id); }
+function getCaderno(id) { return DB.cadernos.find(c=>c.id===id); }
+function getNote(id) { return DB.notes.find(n=>n.id===id); }
+function tagClass(area) { return 'tag-'+(AREA_TAGS[area]||'pessoal'); }
+function statusClass(s) { return {Backlog:'sb-backlog',Planejado:'sb-planejado',Fazendo:'sb-fazendo',Finalizado:'sb-finalizado'}[s]||'sb-backlog'; }
+function priorityIcon(p) { return {Alta:'🔴',Média:'🟡',Baixa:'⚪'}[p]||''; }
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function goPage(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles = {dashboard:'Dashboard',projetos:'Projetos',tarefas:'Tarefas',notas:'Notas',cadernos:'Cadernos',recursos:'Recursos',areas:'Áreas',arquivo:'Arquivo',inbox:'Entrada rápida',settings:'Configurações',calendario:'Calendário','project-detail':'Projeto','caderno-detail':'Caderno'};
+  document.getElementById('page-title').textContent = titles[id]||id;
+  if(id==='projetos') renderKanban();
+  if(id==='tarefas') renderTasksPage();
+  if(id==='cadernos') renderCadernos();
+  if(id==='recursos') renderRecursos();
+  if(id==='areas') renderAreas();
+  if(id==='arquivo') renderArquivo();
+  if(id==='notas') renderNotasPage();
+  if(id==='calendario') renderCalendar();
+  if(id==='settings') updateCounts();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const h = new Date().getHours();
+  const greet = h<12?'Bom dia, Diogo 👋':h<18?'Boa tarde, Diogo 👋':'Boa noite, Diogo 🌙';
+  document.getElementById('greeting').textContent = greet;
+  const pending = DB.tasks.filter(t=>!t.done).length;
+  const urgent = DB.tasks.filter(t=>!t.done&&t.urgent).length;
+  const active = DB.projects.filter(p=>p.status==='Fazendo'||p.status==='Planejado').length;
+  const areaF = document.getElementById('dash-area-filter')?.value||'';
+  document.getElementById('dash-metrics').innerHTML = `
+    <div class="metric"><div class="m-label">Tarefas pendentes</div><div class="m-val" style="color:var(--accent)">${pending}</div><div class="m-sub">${urgent} urgentes</div></div>
+    <div class="metric"><div class="m-label">Projetos ativos</div><div class="m-val">${active}</div><div class="m-sub">Fazendo ou planejado</div></div>
+    <div class="metric"><div class="m-label">Recursos</div><div class="m-val">${DB.resources.length}</div><div class="m-sub">Livros, vídeos, artigos</div></div>
+    <div class="metric"><div class="m-label">Cadernos</div><div class="m-val">${DB.cadernos.length}</div><div class="m-sub">Temáticos</div></div>`;
+  let dashTasks = DB.tasks.filter(t=>!t.done);
+  if(dashTaskFilter==='urgent') dashTasks=dashTasks.filter(t=>t.urgent);
+  else if(dashTaskFilter==='hoje') dashTasks=dashTasks.filter(t=>t.dueDate===new Date().toISOString().slice(0,10));
+  else if(dashTaskFilter==='trabalho') dashTasks=dashTasks.filter(t=>['Cinema','Produção de Vídeos','Renda Extra'].includes(t.area));
+  else if(dashTaskFilter==='vida') dashTasks=dashTasks.filter(t=>['Casa','Saúde','Pessoal','Finanças','Relacionamento','Hobbies'].includes(t.area));
+  if(areaF) dashTasks=dashTasks.filter(t=>t.area===areaF);
+  const sortedDashTasks = applySort(dashTasks, 'dash');
+  document.getElementById('dash-tasks').innerHTML = sortedDashTasks.slice(0,12).map(t=>taskRowHTML(t)).join('')||'<div class="empty">Nenhuma tarefa aqui 🎉</div>';
+  let dashProjs = DB.projects.filter(p=>p.status==='Fazendo'||p.status==='Planejado');
+  if(dashProjFilter!=='all') dashProjs=dashProjs.filter(p=>p.areas.includes(dashProjFilter));
+  document.getElementById('dash-projects').innerHTML = dashProjs.map(p=>`
+    <div class="proj" style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openProjectDetail('${p.id}')">
+      <div style="width:8px;height:8px;border-radius:50%;background:${p.color};flex-shrink:0;"></div>
+      <div style="flex:1;">
+        <div style="font-size:13px;">${p.name}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px;">${p.areas.join(', ')}</div>
+        <div style="height:3px;background:var(--border2);border-radius:2px;margin-top:5px;"><div style="height:100%;width:${Math.round(p.progress*100)}%;background:${p.color};border-radius:2px;"></div></div>
+      </div>
+      <span style="font-size:11px;color:var(--text3);">${Math.round(p.progress*100)}%</span>
+    </div>`).join('')||'<div class="empty">Nenhum projeto em andamento</div>';
+}
+
+// ============================================================
+// TASK ROW HTML
+// ============================================================
+function taskRowHTML(t, compact=false) {
+  const proj = t.projectId ? getProject(t.projectId) : null;
+  const overdue = t.dueDate && isOverdue(t.dueDate);
+  return `<div class="task-row" id="tr-${t.id}" draggable="true" ondragstart="dragStart(event,'${t.id}')" ondragover="dragOver(event)" ondrop="dropTask(event,'${t.id}')" ondragleave="dragLeave(event)" ondragend="dragEnd(event)">
+    <div class="drag-handle" title="Arrastar para reordenar">⠿</div>
+    <div class="task-cb ${t.done?'done':''}" onclick="toggleTask('${t.id}')"></div>
+    <div class="task-main">
+      <div class="task-name ${t.done?'done':''}">${t.name}</div>
+      <div class="task-sub">
+        ${priorityIcon(t.priority)} ${t.priority}
+        ${t.area?`<span class="tag ${tagClass(t.area)}">${t.area}</span>`:''}
+        ${proj?`<span style="color:var(--text3)">📁 ${proj.name}</span>`:''}
+        ${t.dueDate?`<span style="color:${overdue?'var(--red)':'var(--text3)'}">📅 ${fmt(t.dueDate)}</span>`:''}
+        ${t.urgent?`<span style="color:var(--red)">● urgente</span>`:''}
+      </div>
+    </div>
+    <div class="task-actions">
+      <button class="task-action-btn" onclick="openEditTask('${t.id}')">✏️</button>
+      <button class="task-action-btn" onclick="deleteTask('${t.id}')" style="color:var(--red)">🗑️</button>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// DRAG & DROP
+// ============================================================
+let dragSrcId = null;
+let currentSortOrder = { dash: 'manual', tasks: 'manual' };
+let manualOrder = null; // será inicializado na primeira render
+
+function getManualOrder() {
+  if(!manualOrder) {
+    manualOrder = DB.tasks.map(t=>t.id);
+  }
+  return manualOrder;
+}
+
+function applySort(tasks, context) {
+  const order = currentSortOrder[context]||'manual';
+  if(order==='manual') {
+    const mo = getManualOrder();
+    return [...tasks].sort((a,b)=>mo.indexOf(a.id)-mo.indexOf(b.id));
+  }
+  if(order==='urgencia') return [...tasks].sort((a,b)=>(b.urgent?1:0)-(a.urgent?1:0));
+  if(order==='data') return [...tasks].sort((a,b)=>{
+    if(!a.dueDate&&!b.dueDate) return 0;
+    if(!a.dueDate) return 1;
+    if(!b.dueDate) return -1;
+    return a.dueDate.localeCompare(b.dueDate);
+  });
+  if(order==='prioridade') {
+    const po={Alta:0,Média:1,Baixa:2};
+    return [...tasks].sort((a,b)=>(po[a.priority]||1)-(po[b.priority]||1));
+  }
+  if(order==='projeto') return [...tasks].sort((a,b)=>(a.projectId||'').localeCompare(b.projectId||''));
+  return tasks;
+}
+
+function setSortOrder(order, el, context) {
+  currentSortOrder[context] = order;
+  const bar = el.closest('.sort-bar');
+  bar.querySelectorAll('.sort-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  if(context==='dash') renderDashboard();
+  else renderTasksPage();
+}
+
+function dragStart(e, id) {
+  dragSrcId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(()=>{ const el=document.getElementById('tr-'+id); if(el) el.classList.add('dragging'); },0);
+}
+function dragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const row = e.currentTarget;
+  row.classList.add('drag-over');
+}
+function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function dragEnd(e) {
+  document.querySelectorAll('.task-row').forEach(r=>{ r.classList.remove('dragging'); r.classList.remove('drag-over'); });
+}
+function dropTask(e, targetId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(dragSrcId===targetId) return;
+  // Atualiza ordem manual
+  const mo = getManualOrder();
+  const srcIdx = mo.indexOf(dragSrcId);
+  const tgtIdx = mo.indexOf(targetId);
+  if(srcIdx===-1||tgtIdx===-1) return;
+  mo.splice(srcIdx,1);
+  mo.splice(tgtIdx,0,dragSrcId);
+  manualOrder = mo;
+  // Re-render mantendo contexto atual
+  renderDashboard();
+  renderTasksPage();
+}
+
+// ============================================================
+// FILTROS
+// ============================================================
+let dashTaskFilter = 'all';
+let dashProjFilter = 'all';
+let taskPageFilter = 'all';
+let resFilter = 'all';
+let projFilter = 'all';
+
+function setDashTaskFilter(f, el) {
+  dashTaskFilter = f;
+  document.querySelectorAll('#dash-task-filters .filter-chip').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderDashboard();
+}
+function setDashProjFilter(f, el) {
+  dashProjFilter = f;
+  el.closest('.filter-bar').querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderDashboard();
+}
+function setTaskPageFilter(f, el) {
+  taskPageFilter = f;
+  document.querySelectorAll('[data-tfilter]').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderTasksPage();
+}
+function setResFilter(f, el) {
+  resFilter = f;
+  el.closest('.filter-bar').querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderRecursos();
+}
+function setProjFilter(f, el) {
+  projFilter = f;
+  el.closest('.filter-bar').querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderKanban();
+}
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('open');
+}
+
+function toggleTask(id) {
+  const t = getTask(id); if(!t) return;
+  t.done = !t.done; saveDB();
+  renderDashboard(); renderTasksPage();
+  if(document.getElementById('page-project-detail').classList.contains('active')) renderProjectDetail(currentProjectId);
+}
+
+function deleteTask(id) {
+  if(!confirm('Deletar esta tarefa?')) return;
+  DB.projects.forEach(p=>{ p.taskIds = p.taskIds.filter(tid=>tid!==id); });
+  DB.tasks = DB.tasks.filter(t=>t.id!==id); saveDB();
+  renderTasksPage(); renderDashboard();
+}
+
+function quickAddTask() {
+  const inp = document.getElementById('dash-new-task');
+  if(!inp.value.trim()) return;
+  const t = {id:uid(),name:inp.value.trim(),done:false,urgent:false,priority:'Média',projectId:'',area:'Pessoal',dueDate:'',subtasks:[],notes:'',attachments:[]};
+  DB.tasks.unshift(t); saveDB(); inp.value='';
+  renderDashboard();
+}
+
+// ============================================================
+// KANBAN
+// ============================================================
+function renderKanban() {
+  const projAreaF = document.getElementById('proj-area-filter')?.value||'';
+  const cols = ['Backlog','Planejado','Fazendo','Finalizado'];
+  const colors = {Backlog:'var(--text3)',Planejado:'var(--blue)',Fazendo:'var(--orange)',Finalizado:'var(--green)'};
+  document.getElementById('kanban-board').innerHTML = cols.map(s=>{
+    let projs = DB.projects.filter(p=>p.status===s);
+    if(projFilter!=='all') projs=projs.filter(p=>p.status===projFilter&&p.status===s);
+    if(projAreaF) projs=projs.filter(p=>p.areas.includes(projAreaF));
+    return `<div class="kb-col">
+      <div class="kb-col-header">
+        <div class="kb-col-title"><div class="kb-status-dot" style="background:${colors[s]}"></div>${s}</div>
+        <span class="kb-col-count">${projs.length}</span>
+      </div>
+      ${projs.map(p=>`<div class="kb-card" onclick="openProjectDetail('${p.id}')">
+        <div class="kb-card-name">${p.name}</div>
+        <div class="kb-card-tags">${p.areas.map(a=>`<span class="tag ${tagClass(a)}">${a}</span>`).join('')}</div>
+        ${p.endDate?`<div style="font-size:10px;color:${isOverdue(p.endDate)?'var(--red)':'var(--text3)'}">📅 ${fmt(p.endDate)}</div>`:''}
+        <div class="kb-card-prog"><div class="kb-card-fill" style="width:${Math.round(p.progress*100)}%;background:${p.color}"></div></div>
+        <div class="kb-card-meta">${Math.round(p.progress*100)}% · ${p.taskIds.filter(tid=>{ const t=getTask(tid); return t&&!t.done; }).length} tarefas</div>
+      </div>`).join('')}
+      <button class="btn btn-ghost" style="width:100%;margin-top:4px;font-size:12px;" onclick="openModalProjectWithStatus('${s}')">+ Novo projeto</button>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// PROJECT DETAIL
+// ============================================================
+let currentProjectId = '';
+function openProjectDetail(id) {
+  currentProjectId = id;
+  goPage('project-detail', null);
+  document.querySelector('[onclick*=projetos]').classList.add('active');
+  renderProjectDetail(id);
+}
+
+function renderProjectDetail(id) {
+  const p = getProject(id); if(!p) return;
+  const tasks = p.taskIds.map(tid=>getTask(tid)).filter(Boolean);
+  const pending = tasks.filter(t=>!t.done);
+  const done = tasks.filter(t=>t.done);
+  const resources = p.resourceIds.map(rid=>getResource(rid)).filter(Boolean);
+  const notes = p.noteIds.map(nid=>getNote(nid)).filter(Boolean);
+  const cadernos = p.cadernos.map(cid=>getCaderno(cid)).filter(Boolean);
+
+  document.getElementById('project-detail-content').innerHTML = `
+    <div class="proj-detail-header">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:${p.color}"></div>
+          <span class="status-badge ${statusClass(p.status)}">${p.status}</span>
+          ${p.areas.map(a=>`<span class="tag ${tagClass(a)}">${a}</span>`).join('')}
+        </div>
+        <h2 style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:6px;">${p.name}</h2>
+        <p style="font-size:13px;color:var(--text2);">${p.desc||''}</p>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn" onclick="openEditProject('${p.id}')">✏️ Editar</button>
+        <button class="btn btn-danger" onclick="deleteProject('${p.id}')">🗑️</button>
+      </div>
+    </div>
+
+    <div class="proj-detail-props">
+      ${p.startDate?`<span style="font-size:12px;color:var(--text3)">📅 Início: ${fmt(p.startDate)}</span>`:''}
+      ${p.endDate?`<span style="font-size:12px;color:${isOverdue(p.endDate)?'var(--red)':'var(--text3)'}">🏁 Prazo: ${fmt(p.endDate)}</span>`:''}
+    </div>
+
+    <div class="proj-prog-bar"><div class="proj-prog-fill" style="width:${Math.round(p.progress*100)}%;background:${p.color}"></div></div>
+
+    ${cadernos.length?`<div style="margin-bottom:1rem;">
+      <div class="card-title" style="margin-bottom:6px;"><div class="ct-dot" style="background:var(--accent)"></div>Cadernos vinculados</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">${cadernos.map(c=>`<div class="relation-chip" onclick="openCadernoDetail('${c.id}')">${c.icon} ${c.name}</div>`).join('')}</div>
+    </div>`:''}
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title"><div class="ct-dot" style="background:var(--red)"></div>Tarefas pendentes (${pending.length})</div>
+        ${pending.map(t=>taskRowHTML(t)).join('')||'<div class="empty">Nenhuma tarefa pendente</div>'}
+        <div class="quick-add" style="margin-top:.75rem;">
+          <input class="qa-input" id="proj-new-task" placeholder="Nova tarefa..." onkeydown="if(event.key==='Enter')addTaskToProject('${p.id}')">
+          <button class="btn btn-accent" onclick="addTaskToProject('${p.id}')">+</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><div class="ct-dot" style="background:var(--text3)"></div>Concluídas (${done.length})</div>
+        ${done.map(t=>taskRowHTML(t)).join('')||'<div class="empty">Nenhuma tarefa concluída</div>'}
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:.75rem;">
+      <div class="card">
+        <div class="card-title" style="justify-content:space-between;"><span style="display:flex;align-items:center;gap:6px;"><div class="ct-dot" style="background:var(--purple)"></div>Recursos (${resources.length})</span><button class="btn btn-ghost" style="font-size:11px;padding:2px 8px;" onclick="openModal('resource')">+</button></div>
+        ${resources.map(r=>`<div class="res-item" style="align-items:flex-start;">
+          <div class="res-icon">${TYPE_ICONS[r.type]||'📌'}</div>
+          <div style="flex:1;">
+            <div class="res-name">${r.name}</div>
+            <div class="res-meta">${r.type}${r.link?' · <a href="'+r.link+'" target="_blank" class="res-link">Abrir →</a>':''}</div>
+            ${r.internalNotes&&r.internalNotes.length?'<div style="font-size:11px;color:var(--text3);margin-top:3px;">'+r.internalNotes.length+' anotação(ões)</div>':''}
+          </div>
+          <div style="display:flex;gap:4px;flex-shrink:0;">
+            <button class="task-action-btn" onclick="openEditResourceFull('${r.id}')" title="Abrir e editar">✏️</button>
+            <button class="task-action-btn" onclick="unlinkResourceFromProject('${r.id}','${p.id}')" title="Desvincular" style="color:var(--text3);">✕</button>
+          </div>
+        </div>`).join('')||'<div class="empty">Sem recursos vinculados</div>'}
+      </div>
+      <div class="card">
+        <div class="card-title" style="justify-content:space-between;"><span style="display:flex;align-items:center;gap:6px;"><div class="ct-dot" style="background:var(--blue)"></div>Notas (${notes.length})</span><button class="btn btn-ghost" style="font-size:11px;padding:2px 8px;" onclick="openModal('note')">+</button></div>
+        ${notes.map(n=>`<div class="note-item">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+            <div style="flex:1;">
+              <div class="note-name">${n.name}</div>
+              <div class="note-meta">${fmt(n.date)} · ${n.tags.join(', ')}</div>
+              <div style="font-size:12px;color:var(--text2);margin-top:4px;">${n.content.slice(0,100)}${n.content.length>100?'...':''}</div>
+            </div>
+            <div style="display:flex;gap:4px;flex-shrink:0;">
+              <button class="task-action-btn" onclick="openEditNote('${n.id}')">✏️</button>
+              <button class="task-action-btn" onclick="deleteNote('${n.id}')" style="color:var(--red)">🗑️</button>
+            </div>
+          </div>
+        </div>`).join('')||'<div class="empty">Sem notas vinculadas</div>'}
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:.75rem;">
+      <div class="cal-nav" style="margin-bottom:.75rem;">
+        <h3 style="font-size:15px;">Calendário de tarefas</h3>
+        <button class="btn btn-ghost" style="margin-left:auto;font-size:11px;" onclick="goPage('calendario',document.querySelector('[onclick*=calendario]'))">Ver calendário completo →</button>
+      </div>
+      <div id="proj-calendar"></div>
+    </div>`;
+
+  renderMiniCalendar(p);
+}
+
+function addTaskToProject(projId) {
+  const inp = document.getElementById('proj-new-task');
+  if(!inp||!inp.value.trim()) return;
+  const t = {id:uid(),name:inp.value.trim(),done:false,urgent:false,priority:'Média',projectId:projId,area:'Cinema',dueDate:'',subtasks:[],notes:'',attachments:[]};
+  DB.tasks.push(t);
+  const p = getProject(projId); if(p) p.taskIds.push(t.id);
+  saveDB(); inp.value='';
+  renderProjectDetail(projId); renderDashboard();
+}
+
+function renderMiniCalendar(p) {
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  const tasks = p.taskIds.map(tid=>getTask(tid)).filter(t=>t&&t.dueDate);
+  const first = new Date(y,m,1).getDay();
+  const days = new Date(y,m+1,0).getDate();
+  const names = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  let html = `<div class="cal-header">${names.map(n=>`<div class="cal-day-name">${n}</div>`).join('')}</div><div class="cal-grid">`;
+  for(let i=0;i<first;i++) html+=`<div class="cal-day other-month"></div>`;
+  for(let d=1;d<=days;d++){
+    const isToday = d===now.getDate();
+    const dayTasks = tasks.filter(t=>{ const dt=new Date(t.dueDate+'T12:00:00'); return dt.getDate()===d&&dt.getMonth()===m&&dt.getFullYear()===y; });
+    html+=`<div class="cal-day ${isToday?'today':''}"><div class="cal-day-num">${d}</div>${dayTasks.map(t=>`<div class="cal-event">${t.name.slice(0,15)}...</div>`).join('')}</div>`;
+  }
+  html+='</div>';
+  const el = document.getElementById('proj-calendar');
+  if(el) el.innerHTML=html;
+}
+
+function unlinkResourceFromProject(rid, pid) {
+  const p=getProject(pid); if(!p) return;
+  p.resourceIds=p.resourceIds.filter(r=>r!==rid);
+  saveDB(); renderProjectDetail(pid);
+}
+
+function deleteProject(id) {
+  if(!confirm('Deletar este projeto e desvincular suas tarefas?')) return;
+  DB.tasks.forEach(t=>{ if(t.projectId===id) t.projectId=''; });
+  DB.projects = DB.projects.filter(p=>p.id!==id); saveDB();
+  goPage('projetos', document.querySelector('[onclick*=projetos]'));
+}
+
+// ============================================================
+// TASKS PAGE
+// ============================================================
+function renderTasksPage() {
+  const areaF2 = document.getElementById('task-area-filter')?.value||'';
+  const projF2 = document.getElementById('task-proj-filter')?.value||'';
+  const prioF = document.getElementById('task-priority-filter')?.value||'';
+  // Populate project filter
+  const projSel = document.getElementById('task-proj-filter');
+  if(projSel && projSel.options.length<=1) {
+    DB.projects.forEach(p=>{ const o=document.createElement('option'); o.value=p.id; o.textContent=p.name.slice(0,30); projSel.appendChild(o); });
+  }
+  let tasks = [...DB.tasks];
+  if(taskPageFilter==='pending') tasks=tasks.filter(t=>!t.done);
+  else if(taskPageFilter==='urgent') tasks=tasks.filter(t=>!t.done&&t.urgent);
+  else if(taskPageFilter==='done') tasks=tasks.filter(t=>t.done);
+  if(areaF2) tasks=tasks.filter(t=>t.area===areaF2);
+  if(projF2) tasks=tasks.filter(t=>t.projectId===projF2);
+  if(prioF) tasks=tasks.filter(t=>t.priority===prioF);
+  const sortedPageTasks = applySort(tasks, 'tasks');
+  document.getElementById('tasks-page-list').innerHTML =
+    '<div class="card-title"><div class="ct-dot" style="background:var(--accent)"></div>'+sortedPageTasks.length+' tarefas</div>'+
+    sortedPageTasks.map(t=>taskRowHTML(t)).join('')||'<div class="empty">Nenhuma tarefa aqui</div>';
+}
+
+// ============================================================
+// CADERNOS
+// ============================================================
+function renderCadernos() {
+  document.getElementById('cadernos-grid').innerHTML = DB.cadernos.map(c=>`
+    <div class="caderno-card" onclick="openCadernoDetail('${c.id}')">
+      <div class="caderno-icon">${c.icon}</div>
+      <div class="caderno-name">${c.name}</div>
+      <div style="font-size:12px;color:var(--text2);margin:3px 0 6px;">${c.desc}</div>
+      <div class="caderno-count">${c.noteIds.length} notas · Área: ${c.area}</div>
+    </div>`).join('');
+}
+
+let currentCadernoId = '';
+function openCadernoDetail(id) {
+  currentCadernoId = id;
+  goPage('caderno-detail', null);
+  document.querySelector('[onclick*=cadernos]').classList.add('active');
+  const c = getCaderno(id); if(!c) return;
+
+  // Se for caderno diário, mostrar conteúdo bruto formatado
+  if(c.isDiary) {
+    const lines = (c.diaryContent||'').split('\n');
+    let html = '';
+    let inSection = false;
+    for(const line of lines) {
+      const l = line.trim();
+      if(!l) { html += '<div style="height:6px;"></div>'; continue; }
+      if(l.startsWith('LEMBRETES') || l.startsWith('POR DATA') || l.startsWith('FIXADOS') || l.match(/^[A-Z\s]{4,}$/)) {
+        html += `<div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin:1rem 0 .4rem;font-weight:500;">${l}</div>`;
+      } else if(l.startsWith('--')) {
+        html += `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--accent);flex-shrink:0;">·</span><span>${l.replace(/^--/,'').trim()}</span></div>`;
+      } else if(l.startsWith('-')) {
+        const dateMatch = l.match(/^-?(\d{2}\/\d{2}\/?\d{0,4}|\d{2} a \d{2}\/\d{2}\/?\d{0,4}|\d{2}-\d{2}\/\d{2}\/?\d{0,4})-?\s*(.*)/);
+        if(dateMatch) {
+          html += `<div style="display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:baseline;"><span style="color:var(--accent);font-size:11px;flex-shrink:0;min-width:110px;">${dateMatch[1]}</span><span>${dateMatch[2]}</span></div>`;
+        } else {
+          html += `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--border2);flex-shrink:0;">–</span><span>${l.replace(/^-/,'').trim()}</span></div>`;
+        }
+      } else {
+        html += `<div style="font-size:13px;padding:4px 0;color:var(--text2);">${l}</div>`;
+      }
+    }
+    document.getElementById('caderno-detail-content').innerHTML = `
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem;">
+        <div>
+          <div style="font-size:28px;margin-bottom:6px;">${c.icon}</div>
+          <h2 style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;">${c.name}</h2>
+          <p style="font-size:13px;color:var(--text2);">${c.desc}</p>
+        </div>
+        <div style="font-size:11px;color:var(--text3);text-align:right;">Sincronizado automaticamente<br>via Google Docs</div>
+      </div>
+      <div class="card">${html||'<div class="empty">Nenhum conteúdo ainda. Sincronize o Google Docs para ver as notas aqui.</div>'}</div>`;
+    return;
+  }
+
+  // Caderno normal
+  const notes = c.noteIds.map(nid=>getNote(nid)).filter(Boolean);
+  const projs = c.projectIds.map(pid=>getProject(pid)).filter(Boolean);
+  document.getElementById('caderno-detail-content').innerHTML = `
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem;">
+      <div>
+        <div style="font-size:28px;margin-bottom:6px;">${c.icon}</div>
+        <h2 style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;">${c.name}</h2>
+        <p style="font-size:13px;color:var(--text2);">${c.desc}</p>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn" onclick="openEditCaderno('${c.id}')">✏️ Editar</button>
+        <button class="btn btn-danger" onclick="deleteCaderno('${c.id}')">🗑️</button>
+      </div>
+    </div>
+    ${projs.length?`<div style="margin-bottom:1rem;"><div class="card-title">Projetos vinculados</div><div style="display:flex;gap:6px;flex-wrap:wrap;">${projs.map(p=>`<div class="relation-chip" onclick="openProjectDetail('${p.id}')">📁 ${p.name}</div>`).join('')}</div></div>`:''}
+    <div class="card">
+      <div class="card-title" style="justify-content:space-between;"><span style="display:flex;align-items:center;gap:6px;"><div class="ct-dot" style="background:var(--blue)"></div>Notas (${notes.length})</span><button class="btn btn-ghost" style="font-size:11px;" onclick="openModal('note')">+ Nova nota</button></div>
+      ${notes.map(n=>`<div class="note-item">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="note-name">${n.name}</div>
+          <div style="display:flex;gap:4px;"><button class="task-action-btn" onclick="openEditNote('${n.id}')">✏️</button><button class="task-action-btn" onclick="deleteNote('${n.id}')" style="color:var(--red)">🗑️</button></div>
+        </div>
+        <div class="note-meta">${fmt(n.date)} · ${n.tags.join(', ')}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px;">${n.content.slice(0,120)}${n.content.length>120?'...':''}</div>
+      </div>`).join('')||'<div class="empty">Nenhuma nota neste caderno</div>'}
+    </div>`;
+}
+
+
+function deleteCaderno(id) {
+  if(!confirm('Deletar este caderno? As notas não serão apagadas.')) return;
+  DB.cadernos = DB.cadernos.filter(c=>c.id!==id); saveDB();
+  goPage('cadernos', document.querySelector('[onclick*=cadernos]'));
+}
+
+function deleteNote(id) {
+  if(!confirm('Deletar esta nota?')) return;
+  DB.cadernos.forEach(c=>{ c.noteIds=c.noteIds.filter(nid=>nid!==id); });
+  DB.projects.forEach(p=>{ p.noteIds=p.noteIds.filter(nid=>nid!==id); });
+  DB.notes = DB.notes.filter(n=>n.id!==id); saveDB();
+  if(currentCadernoId) openCadernoDetail(currentCadernoId);
+}
+
+// ============================================================
+// RECURSOS
+// ============================================================
+function renderRecursos() {
+  const resAreaF = document.getElementById('res-area-filter')?.value||'';
+  let filteredRes = DB.resources;
+  if(resFilter!=='all') filteredRes=filteredRes.filter(r=>r.type===resFilter);
+  if(resAreaF) filteredRes=filteredRes.filter(r=>r.area===resAreaF);
+  document.getElementById('recursos-list').innerHTML =
+    '<div class="card-title"><div class="ct-dot" style="background:var(--purple)"></div>'+filteredRes.length+' recursos</div>'+
+    filteredRes.map(r=>`<div class="res-item">
+      <div class="res-icon">${TYPE_ICONS[r.type]||'📌'}</div>
+      <div style="flex:1;">
+        <div class="res-name">${r.name}</div>
+        <div class="res-meta">${r.type} · ${r.area}${r.desc?' · '+r.desc:''}</div>
+        ${r.link?`<a href="${r.link}" target="_blank" class="res-link">Abrir link →</a>`:''}
+      </div>
+      <div style="display:flex;gap:4px;opacity:0;transition:opacity .12s;" class="res-actions">
+        <button class="task-action-btn" onclick="openEditResource('${r.id}')">✏️</button>
+        <button class="task-action-btn" onclick="deleteResource('${r.id}')" style="color:var(--red)">🗑️</button>
+      </div>
+    </div>`).join('');
+  document.querySelectorAll('.res-item').forEach(el=>{
+    el.addEventListener('mouseenter',()=>el.querySelector('.res-actions').style.opacity='1');
+    el.addEventListener('mouseleave',()=>el.querySelector('.res-actions').style.opacity='0');
+  });
+}
+
+function deleteResource(id) {
+  if(!confirm('Deletar este recurso?')) return;
+  DB.projects.forEach(p=>{ p.resourceIds=p.resourceIds.filter(rid=>rid!==id); });
+  DB.resources=DB.resources.filter(r=>r.id!==id); saveDB(); renderRecursos();
+}
+
+// ============================================================
+// AREAS
+// ============================================================
+function renderAreas() {
+  const icons = {Cinema:'🎬','Produção de Vídeos':'📹',Pessoal:'👤',Saúde:'❤️',Casa:'🏠',Finanças:'💰',Relacionamento:'💑',Hobbies:'🎵','Renda Extra':'💡'};
+  document.getElementById('areas-grid').innerHTML = DB.areas.map(a=>{
+    const projs = DB.projects.filter(p=>p.areas.includes(a.name)&&p.status!=='Finalizado').length;
+    const tasks = DB.tasks.filter(t=>t.area===a.name&&!t.done).length;
+    return `<div class="caderno-card">
+      <div class="caderno-icon">${icons[a.name]||'📌'}</div>
+      <div class="caderno-name">${a.name}</div>
+      <div class="caderno-count" style="margin-top:4px;">${projs} projetos · ${tasks} tarefas</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// ARQUIVO
+// ============================================================
+function renderNotasPage() {
+  const cadernoF = document.getElementById('notes-caderno-filter')?.value||'';
+  const projF = document.getElementById('notes-proj-filter')?.value||'';
+  const areaF = document.getElementById('notes-area-filter')?.value||'';
+  const searchF = (document.getElementById('notes-search')?.value||'').toLowerCase();
+
+  // Popular selects se vazios
+  const cadSel = document.getElementById('notes-caderno-filter');
+  if(cadSel && cadSel.options.length<=1) {
+    DB.cadernos.filter(c=>!c.isDiary).forEach(c=>{ const o=document.createElement('option'); o.value=c.id; o.textContent=c.icon+' '+c.name; cadSel.appendChild(o); });
+  }
+  const projSel = document.getElementById('notes-proj-filter');
+  if(projSel && projSel.options.length<=1) {
+    DB.projects.forEach(p=>{ const o=document.createElement('option'); o.value=p.id; o.textContent=p.name.slice(0,30); projSel.appendChild(o); });
+  }
+
+  // Filtrar notas estruturadas
+  let notes = [...DB.notes];
+  if(cadernoF) notes=notes.filter(n=>n.cadernoId===cadernoF);
+  if(projF) notes=notes.filter(n=>n.projectId===projF);
+  if(areaF) notes=notes.filter(n=>n.tags&&n.tags.some(t=>t.toLowerCase().includes(areaF.toLowerCase())));
+  if(searchF) notes=notes.filter(n=>n.name.toLowerCase().includes(searchF)||n.content.toLowerCase().includes(searchF));
+
+  const structuredEl = document.getElementById('notes-structured-body');
+  const countEl = document.getElementById('notes-structured-count');
+  if(countEl) countEl.textContent = notes.length + ' notas';
+  if(structuredEl) {
+    structuredEl.innerHTML = notes.length ? notes.map(n=>{
+      const proj = n.projectId ? getProject(n.projectId) : null;
+      const cad = n.cadernoId ? getCaderno(n.cadernoId) : null;
+      return `<div class="note-item">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+          <div style="flex:1;">
+            <div class="note-name">${n.name}</div>
+            <div class="note-meta">
+              ${fmt(n.date)}
+              ${cad?`· <span style="color:var(--accent)">${cad.icon} ${cad.name}</span>`:''}
+              ${proj?`· <span style="color:var(--blue)">📁 ${proj.name}</span>`:''}
+              ${n.tags&&n.tags.length?`· ${n.tags.map(t=>`<span class="tag tag-${tagClass(t)}">${t}</span>`).join('')}`:''}
+            </div>
+            <div style="font-size:12px;color:var(--text2);margin-top:4px;">${n.content.slice(0,150)}${n.content.length>150?'...':''}</div>
+          </div>
+          <div style="display:flex;gap:4px;flex-shrink:0;">
+            <button class="task-action-btn" onclick="openEditNote('${n.id}')">✏️</button>
+            <button class="task-action-btn" onclick="deleteNote('${n.id}')" style="color:var(--red)">🗑️</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('') : '<div class="empty">Nenhuma nota encontrada</div>';
+  }
+
+  // Renderizar diários
+  const diarioVida = DB.cadernos.find(c=>c.id==='c0');
+  const diarioTrabalho = DB.cadernos.find(c=>c.id==='c0t');
+  renderDiaryBlock('notes-vida-body', diarioVida?.diaryContent||'', searchF);
+  renderDiaryBlock('notes-trabalho-body', diarioTrabalho?.diaryContent||'', searchF);
+}
+
+function renderDiaryBlock(elId, text, searchF) {
+  const el = document.getElementById(elId);
+  if(!el) return;
+  if(!text) { el.innerHTML='<div class="empty">Não sincronizado ainda. Clique em Sync Docs.</div>'; return; }
+  const lines = text.split('\n');
+  let html = '';
+  for(const line of lines) {
+    const l = line.trim();
+    if(!l) { html += '<div style="height:5px;"></div>'; continue; }
+    if(searchF && !l.toLowerCase().includes(searchF)) continue;
+    const highlight = searchF ? l.replace(new RegExp(searchF,'gi'), m=>`<mark style="background:rgba(201,168,108,.3);color:var(--text);">${m}</mark>`) : l;
+    if(l.match(/^[A-ZÁÉÍÓÚÃÕÂÊÔ\s]{4,}$/) || l.startsWith('LEMBRETES') || l.startsWith('POR DATA') || l.startsWith('FIXADOS')) {
+      html += `<div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin:1rem 0 .3rem;font-weight:500;">${highlight}</div>`;
+    } else if(l.startsWith('--')) {
+      html += `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--accent);flex-shrink:0;">·</span><span>${highlight.replace(/^--/,'').trim()}</span></div>`;
+    } else if(l.startsWith('-')) {
+      const dateMatch = l.match(/^-?(.{3,20}?)-\s*(.*)/);
+      if(dateMatch && dateMatch[1].match(/\d/)) {
+        html += `<div style="display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:baseline;"><span style="color:var(--accent);font-size:11px;flex-shrink:0;min-width:120px;">${dateMatch[1]}</span><span>${dateMatch[2]||''}</span></div>`;
+      } else {
+        html += `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--border2);">–</span><span>${highlight.replace(/^-/,'').trim()}</span></div>`;
+      }
+    } else {
+      html += `<div style="font-size:13px;padding:4px 0;color:var(--text2);">${highlight}</div>`;
+    }
+  }
+  el.innerHTML = html || '<div class="empty">Nenhuma entrada encontrada com esse filtro.</div>';
+}
+
+function toggleNotesBlock(id) {
+  const bodies = { structured:'notes-structured-body', vida:'notes-vida-body', trabalho:'notes-trabalho-body' };
+  const el = document.getElementById(bodies[id]);
+  if(!el) return;
+  el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+
+function renderArquivo() {
+  const archived = DB.projects.filter(p=>p.status==='Finalizado');
+  document.getElementById('arquivo-list').innerHTML =
+    '<div class="card-title"><div class="ct-dot" style="background:var(--text3)"></div>Projetos finalizados</div>'+
+    archived.map(p=>`<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openProjectDetail('${p.id}')">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;"></div>
+      <div style="flex:1;"><div style="font-size:13px;">${p.name}</div><div style="font-size:11px;color:var(--text3);">${p.areas.join(', ')} · ${p.endDate?fmt(p.endDate):''}</div></div>
+      <span class="status-badge sb-finalizado">100%</span>
+    </div>`).join('')||'<div class="empty">Nenhum projeto finalizado</div>';
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+function renderCalendar() {
+  const names = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('cal-month-label').textContent = months[calMonth]+' '+calYear;
+  document.getElementById('cal-header').innerHTML = names.map(n=>`<div class="cal-day-name">${n}</div>`).join('');
+  const first = new Date(calYear,calMonth,1).getDay();
+  const days = new Date(calYear,calMonth+1,0).getDate();
+  const today = new Date();
+  const tasksWithDue = DB.tasks.filter(t=>t.dueDate);
+  let html='';
+  for(let i=0;i<first;i++) html+=`<div class="cal-day other-month"></div>`;
+  for(let d=1;d<=days;d++){
+    const isToday = d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const dayTasks = tasksWithDue.filter(t=>{ const dt=new Date(t.dueDate+'T12:00:00'); return dt.getDate()===d&&dt.getMonth()===calMonth&&dt.getFullYear()===calYear; });
+    html+=`<div class="cal-day ${isToday?'today':''}">
+      <div class="cal-day-num">${d}</div>
+      ${dayTasks.map(t=>`<div class="cal-event ${t.urgent?'red':''}">${t.name.slice(0,14)}</div>`).join('')}
+    </div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+}
+function calPrev(){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+function calNext(){ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
+function calToday(){ calMonth=new Date().getMonth(); calYear=new Date().getFullYear(); renderCalendar(); }
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(type, data={}) {
+  document.getElementById('modal-overlay').style.display='flex';
+  const m = document.getElementById('modal-content');
+  if(type==='task') m.innerHTML = taskModalHTML(data);
+  else if(type==='project') m.innerHTML = projectModalHTML(data);
+  else if(type==='resource') m.innerHTML = resourceModalHTML(data);
+  else if(type==='caderno') m.innerHTML = cadernoModalHTML(data);
+  else if(type==='note') m.innerHTML = noteModalHTML(data);
+  else if(type==='quickadd') m.innerHTML = quickAddModalHTML();
+}
+function closeModal() { document.getElementById('modal-overlay').style.display='none'; }
+function openEditTask(id) { openModal('task', getTask(id)||{}); }
+function openEditProject(id) { openModal('project', getProject(id)||{}); }
+function openEditResource(id) { openModal('resource', getResource(id)||{}); }
+function openEditCaderno(id) { openModal('caderno', getCaderno(id)||{}); }
+function openEditNote(id) { openModal('note', getNote(id)||{}); }
+function openModalProjectWithStatus(status) { openModal('project', {status}); }
+function openQuickAdd() { openModal('quickadd'); }
+
+function projectModalHTML(p={}) {
+  const isEdit = !!p.id;
+  return `<div class="modal-header">
+    <div class="modal-title">${isEdit?'Editar projeto':'Novo projeto'}</div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+  </div>
+  <div class="form-row"><label class="form-label">Nome</label><input class="form-input" id="fm-name" value="${p.name||''}"></div>
+  <div class="form-row-inline">
+    <div class="form-row"><label class="form-label">Status</label><select class="form-input form-select" id="fm-status">${STATUS_LIST.map(s=>`<option ${p.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
+    <div class="form-row"><label class="form-label">Área principal</label><select class="form-input form-select" id="fm-area">${AREAS_LIST.map(a=>`<option ${(p.areas||[]).includes(a)?'selected':''}>${a}</option>`).join('')}</select></div>
+  </div>
+  <div class="form-row-inline">
+    <div class="form-row"><label class="form-label">Data início</label><input type="date" class="form-input" id="fm-start" value="${p.startDate||''}"></div>
+    <div class="form-row"><label class="form-label">Data fim / prazo</label><input type="date" class="form-input" id="fm-end" value="${p.endDate||''}"></div>
+  </div>
+  <div class="form-row"><label class="form-label">Progresso (0–100)</label><input type="number" class="form-input" id="fm-prog" min="0" max="100" value="${Math.round((p.progress||0)*100)}"></div>
+  <div class="form-row"><label class="form-label">Descrição</label><textarea class="form-input form-textarea" id="fm-desc">${p.desc||''}</textarea></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;">
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-accent" onclick="saveProject('${p.id||''}')">💾 Salvar</button>
+  </div>`;
+}
+
+function saveProject(id) {
+  const name=document.getElementById('fm-name').value.trim();
+  if(!name) return;
+  if(id) {
+    const p=getProject(id);
+    p.name=name; p.status=document.getElementById('fm-status').value;
+    p.areas=[document.getElementById('fm-area').value];
+    p.startDate=document.getElementById('fm-start').value;
+    p.endDate=document.getElementById('fm-end').value;
+    p.progress=parseInt(document.getElementById('fm-prog').value)/100;
+    p.desc=document.getElementById('fm-desc').value;
+  } else {
+    DB.projects.push({id:uid(),name,status:document.getElementById('fm-status').value,areas:[document.getElementById('fm-area').value],progress:parseInt(document.getElementById('fm-prog').value)/100,desc:document.getElementById('fm-desc').value,startDate:document.getElementById('fm-start').value,endDate:document.getElementById('fm-end').value,cadernos:[],taskIds:[],resourceIds:[],noteIds:[],color:['#8b70cc','#5a8fcc','#c9a86c','#5aab7a','#e05c4b'][Math.floor(Math.random()*5)]});
+  }
+  saveDB(); closeModal(); renderKanban(); renderDashboard();
+  if(id) renderProjectDetail(id);
+}
+
+function taskModalHTML(t={}) {
+  const isEdit = !!t.id;
+  const subtasks = t.subtasks||[];
+  return `<div class="modal-header">
+    <div class="modal-title">${isEdit?'Editar tarefa':'Nova tarefa'}</div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+  </div>
+  <div class="form-row"><label class="form-label">Nome</label><input class="form-input" id="ft-name" value="${t.name||''}"></div>
+  <div class="form-row-inline">
+    <div class="form-row"><label class="form-label">Prioridade</label><select class="form-input form-select" id="ft-pri">${PRIORITY_LIST.map(p=>`<option ${t.priority===p?'selected':''}>${p}</option>`).join('')}</select></div>
+    <div class="form-row"><label class="form-label">Área</label><select class="form-input form-select" id="ft-area">${AREAS_LIST.map(a=>`<option ${t.area===a?'selected':''}>${a}</option>`).join('')}</select></div>
+  </div>
+  <div class="form-row-inline">
+    <div class="form-row"><label class="form-label">Projeto</label><select class="form-input form-select" id="ft-proj"><option value="">Sem projeto</option>${DB.projects.filter(p=>p.status!=='Finalizado').map(p=>`<option value="${p.id}" ${t.projectId===p.id?'selected':''}>${p.name}</option>`).join('')}</select></div>
+    <div class="form-row"><label class="form-label">Prazo</label><input type="date" class="form-input" id="ft-due" value="${t.dueDate||''}"></div>
+  </div>
+  <div class="form-row"><label class="form-label">Urgente?</label><select class="form-input form-select" id="ft-urg"><option value="0" ${!t.urgent?'selected':''}>Não</option><option value="1" ${t.urgent?'selected':''}>Sim</option></select></div>
+  <div class="form-row"><label class="form-label">Notas</label><textarea class="form-input form-textarea" id="ft-notes" style="min-height:60px;">${t.notes||''}</textarea></div>
+  <div class="form-row">
+    <label class="form-label">Subtarefas</label>
+    <div class="subtask-list" id="subtask-list">${subtasks.map(s=>`<div class="subtask-item" id="si-${s.id}"><input type="checkbox" ${s.done?'checked':''} onchange="toggleSubtask('${t.id||''}','${s.id}')"><span>${s.name}</span><button class="del-btn" onclick="removeSubtaskUI('${s.id}')">✕</button></div>`).join('')}</div>
+    <div style="display:flex;gap:6px;"><input class="qa-input" id="new-subtask" placeholder="Nova subtarefa..." onkeydown="if(event.key==='Enter')addSubtaskUI()"><button class="btn" onclick="addSubtaskUI()">+</button></div>
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;">
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-accent" onclick="saveTask('${t.id||''}')">💾 Salvar</button>
+  </div>`;
+}
+
+function addSubtaskUI() {
+  const inp = document.getElementById('new-subtask');
+  if(!inp.value.trim()) return;
+  const id = uid();
+  const li = document.createElement('div');
+  li.className='subtask-item'; li.id='si-'+id;
+  li.innerHTML=`<input type="checkbox"><span>${inp.value.trim()}</span><button class="del-btn" onclick="removeSubtaskUI('${id}')">✕</button>`;
+  document.getElementById('subtask-list').appendChild(li);
+  inp.value='';
+}
+function removeSubtaskUI(id) { document.getElementById('si-'+id)?.remove(); }
+function toggleSubtask(taskId, subId) {
+  const t = getTask(taskId); if(!t) return;
+  const s = t.subtasks.find(s=>s.id===subId); if(s) s.done=!s.done; saveDB();
+}
+
+function saveTask(id) {
+  const name=document.getElementById('ft-name').value.trim(); if(!name) return;
+  const subs=[...document.getElementById('subtask-list').children].map(el=>({id:el.id.replace('si-',''),name:el.querySelector('span').textContent,done:el.querySelector('input').checked}));
+  const projId=document.getElementById('ft-proj').value;
+  if(id) {
+    const t=getTask(id);
+    const oldProj=t.projectId;
+    t.name=name; t.priority=document.getElementById('ft-pri').value; t.area=document.getElementById('ft-area').value;
+    t.projectId=projId; t.dueDate=document.getElementById('ft-due').value;
+    t.urgent=document.getElementById('ft-urg').value==='1'; t.notes=document.getElementById('ft-notes').value; t.subtasks=subs;
+    if(oldProj&&oldProj!==projId){ const op=getProject(oldProj); if(op) op.taskIds=op.taskIds.filter(tid=>tid!==id); }
+    if(projId){ const np=getProject(projId); if(np&&!np.taskIds.includes(id)) np.taskIds.push(id); }
+  } else {
+    const t={id:uid(),name,done:false,urgent:document.getElementById('ft-urg').value==='1',priority:document.getElementById('ft-pri').value,projectId:projId,area:document.getElementById('ft-area').value,dueDate:document.getElementById('ft-due').value,subtasks:subs,notes:document.getElementById('ft-notes').value,attachments:[]};
+    DB.tasks.push(t);
+    if(projId){ const p=getProject(projId); if(p) p.taskIds.push(t.id); }
+  }
+  saveDB(); closeModal(); renderTasksPage(); renderDashboard();
+  if(currentProjectId) renderProjectDetail(currentProjectId);
+}
+
+function resourceModalHTML(r={}) {
+  const isEdit=!!r.id;
+  const resNotes = (r.internalNotes||[]);
+  const notesHTML = resNotes.map((n,i)=>`
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.75rem;margin-bottom:.5rem;position:relative;">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px;">${n.date}</div>
+      <div style="font-size:13px;white-space:pre-wrap;">${n.text}</div>
+      <button onclick="removeResNote(${i})" style="position:absolute;top:6px;right:8px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;">✕</button>
+    </div>`).join('');
+  return `<div class="modal-header"><div class="modal-title">${isEdit?'Abrir / Editar recurso':'Novo recurso'}</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+  <div class="form-row"><label class="form-label">Nome</label><input class="form-input" id="fr-name" value="${r.name||''}"></div>
+  <div class="form-row-inline">
+    <div class="form-row"><label class="form-label">Tipo</label><select class="form-input form-select" id="fr-type">${RES_TYPES.map(t=>`<option ${r.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div class="form-row"><label class="form-label">Área</label><select class="form-input form-select" id="fr-area">${AREAS_LIST.map(a=>`<option ${r.area===a?'selected':''}>${a}</option>`).join('')}</select></div>
+  </div>
+  <div class="form-row"><label class="form-label">Link</label><input class="form-input" id="fr-link" placeholder="https://..." value="${r.link||''}"></div>
+  <div class="form-row"><label class="form-label">Descrição</label><textarea class="form-input form-textarea" id="fr-desc">${r.desc||''}</textarea></div>
+  <hr style="border:none;border-top:1px solid var(--border);margin:.75rem 0;">
+  <div class="form-row">
+    <label class="form-label">📝 Minhas anotações sobre este recurso</label>
+    <div id="res-notes-list">${notesHTML||'<div style="font-size:12px;color:var(--text3);margin-bottom:.5rem;">Nenhuma anotação ainda.</div>'}</div>
+    <textarea class="form-input form-textarea" id="fr-new-note" style="min-height:70px;" placeholder="Adicione uma anotação, insight ou trecho importante..."></textarea>
+    <button class="btn" style="margin-top:6px;" onclick="addResNoteUI()">+ Adicionar anotação</button>
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;">
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-accent" onclick="saveResource('${r.id||''}')">💾 Salvar</button>
+  </div>`;
+}
+
+let _currentResNotes = [];
+function _initResNotes(r){ _currentResNotes = r ? JSON.parse(JSON.stringify(r.internalNotes||[])) : []; }
+function addResNoteUI(){
+  const inp = document.getElementById('fr-new-note');
+  if(!inp||!inp.value.trim()) return;
+  _currentResNotes.push({date: new Date().toLocaleDateString('pt-BR'), text: inp.value.trim()});
+  inp.value='';
+  const list = document.getElementById('res-notes-list');
+  list.innerHTML = _currentResNotes.map((n,i)=>`
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.75rem;margin-bottom:.5rem;position:relative;">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px;">${n.date}</div>
+      <div style="font-size:13px;white-space:pre-wrap;">${n.text}</div>
+      <button onclick="removeResNote(${i})" style="position:absolute;top:6px;right:8px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;">✕</button>
+    </div>`).join('');
+}
+function removeResNote(i){
+  _currentResNotes.splice(i,1);
+  const list=document.getElementById('res-notes-list');
+  if(list) list.innerHTML=_currentResNotes.map((n,idx)=>`
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.75rem;margin-bottom:.5rem;position:relative;">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px;">${n.date}</div>
+      <div style="font-size:13px;white-space:pre-wrap;">${n.text}</div>
+      <button onclick="removeResNote(${idx})" style="position:absolute;top:6px;right:8px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;">✕</button>
+    </div>`).join('')||'<div style="font-size:12px;color:var(--text3);">Nenhuma anotação ainda.</div>';
+}
+function openEditResourceFull(id){
+  const r=getResource(id);
+  _initResNotes(r);
+  openModal('resource',r||{});
+}
+
+
+function saveResource(id) {
+  const name=document.getElementById('fr-name').value.trim(); if(!name) return;
+  if(id) {
+    const r=getResource(id);
+    r.name=name; r.type=document.getElementById('fr-type').value; r.area=document.getElementById('fr-area').value;
+    r.link=document.getElementById('fr-link').value; r.desc=document.getElementById('fr-desc').value;
+    r.internalNotes=[..._currentResNotes];
+  } else {
+    DB.resources.push({id:uid(),name,type:document.getElementById('fr-type').value,area:document.getElementById('fr-area').value,link:document.getElementById('fr-link').value,desc:document.getElementById('fr-desc').value,projectIds:[],noteIds:[],internalNotes:[]});
+  }
+  saveDB(); closeModal(); renderRecursos();
+  if(currentProjectId) renderProjectDetail(currentProjectId);
+}
+
+
+function cadernoModalHTML(c={}) {
+  const isEdit=!!c.id;
+  return `<div class="modal-header"><div class="modal-title">${isEdit?'Editar caderno':'Novo caderno'}</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+  <div class="form-row-inline">
+    <div class="form-row" style="max-width:80px;"><label class="form-label">Ícone</label><input class="form-input" id="fc-icon" value="${c.icon||'📒'}" style="text-align:center;font-size:20px;"></div>
+    <div class="form-row"><label class="form-label">Nome</label><input class="form-input" id="fc-name" value="${c.name||''}"></div>
+  </div>
+  <div class="form-row"><label class="form-label">Área</label><select class="form-input form-select" id="fc-area">${AREAS_LIST.map(a=>`<option ${c.area===a?'selected':''}>${a}</option>`).join('')}</select></div>
+  <div class="form-row"><label class="form-label">Descrição</label><textarea class="form-input form-textarea" id="fc-desc">${c.desc||''}</textarea></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;">
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-accent" onclick="saveCaderno('${c.id||''}')">💾 Salvar</button>
+  </div>`;
+}
+
+function saveCaderno(id) {
+  const name=document.getElementById('fc-name').value.trim(); if(!name) return;
+  if(id) {
+    const c=getCaderno(id);
+    c.name=name; c.icon=document.getElementById('fc-icon').value; c.area=document.getElementById('fc-area').value; c.desc=document.getElementById('fc-desc').value;
+  } else {
+    DB.cadernos.push({id:uid(),name,icon:document.getElementById('fc-icon').value,area:document.getElementById('fc-area').value,desc:document.getElementById('fc-desc').value,noteIds:[],projectIds:[]});
+  }
+  saveDB(); closeModal(); renderCadernos();
+  if(currentCadernoId) openCadernoDetail(currentCadernoId);
+}
+
+function noteModalHTML(n={}) {
+  const isEdit=!!n.id;
+  return `<div class="modal-header"><div class="modal-title">${isEdit?'Editar nota':'Nova nota'}</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+  <div class="form-row"><label class="form-label">Título</label><input class="form-input" id="fn-name" value="${n.name||''}"></div>
+  <div class="form-row"><label class="form-label">Caderno</label><select class="form-input form-select" id="fn-cad"><option value="">Sem caderno</option>${DB.cadernos.map(c=>`<option value="${c.id}" ${n.cadernoId===c.id?'selected':''}>${c.icon} ${c.name}</option>`).join('')}</select></div>
+  <div class="form-row"><label class="form-label">Projeto</label><select class="form-input form-select" id="fn-proj"><option value="">Sem projeto</option>${DB.projects.filter(p=>p.status!=='Finalizado').map(p=>`<option value="${p.id}" ${n.projectId===p.id?'selected':''}>${p.name}</option>`).join('')}</select></div>
+  <div class="form-row"><label class="form-label">Tags (separadas por vírgula)</label><input class="form-input" id="fn-tags" value="${(n.tags||[]).join(', ')}"></div>
+  <div class="form-row"><label class="form-label">Conteúdo</label><textarea class="form-input form-textarea" style="min-height:120px;" id="fn-content">${n.content||''}</textarea></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;">
+    <button class="btn" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-accent" onclick="saveNote('${n.id||''}')">💾 Salvar</button>
+  </div>`;
+}
+
+function saveNote(id) {
+  const name=document.getElementById('fn-name').value.trim(); if(!name) return;
+  const cadernoId=document.getElementById('fn-cad').value;
+  const projId=document.getElementById('fn-proj').value;
+  const tags=document.getElementById('fn-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  if(id) {
+    const n=getNote(id); const oldCad=n.cadernoId; const oldProj=n.projectId;
+    n.name=name; n.cadernoId=cadernoId; n.projectId=projId; n.tags=tags; n.content=document.getElementById('fn-content').value;
+    if(oldCad&&oldCad!==cadernoId){ const oc=getCaderno(oldCad); if(oc) oc.noteIds=oc.noteIds.filter(nid=>nid!==id); }
+    if(oldProj&&oldProj!==projId){ const op=getProject(oldProj); if(op) op.noteIds=op.noteIds.filter(nid=>nid!==id); }
+  } else {
+    const n={id:uid(),name,content:document.getElementById('fn-content').value,cadernoId,projectId:projId,tags,date:new Date().toISOString().slice(0,10)};
+    DB.notes.push(n);
+    if(cadernoId){ const c=getCaderno(cadernoId); if(c&&!c.noteIds.includes(n.id)) c.noteIds.push(n.id); }
+    if(projId){ const p=getProject(projId); if(p&&!p.noteIds.includes(n.id)) p.noteIds.push(n.id); }
+  }
+  saveDB(); closeModal();
+  if(currentCadernoId) openCadernoDetail(currentCadernoId);
+  if(currentProjectId) renderProjectDetail(currentProjectId);
+}
+
+function quickAddModalHTML() {
+  return `<div class="modal-header"><div class="modal-title">Adicionar novo item</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.5rem;">
+    <div class="caderno-card" onclick="closeModal();openModal('task')"><div class="caderno-icon">✅</div><div class="caderno-name">Tarefa</div></div>
+    <div class="caderno-card" onclick="closeModal();openModal('project')"><div class="caderno-icon">📁</div><div class="caderno-name">Projeto</div></div>
+    <div class="caderno-card" onclick="closeModal();openModal('note')"><div class="caderno-icon">📝</div><div class="caderno-name">Nota</div></div>
+    <div class="caderno-card" onclick="closeModal();openModal('resource')"><div class="caderno-icon">📚</div><div class="caderno-name">Recurso</div></div>
+    <div class="caderno-card" onclick="closeModal();openModal('caderno')"><div class="caderno-icon">📒</div><div class="caderno-name">Caderno</div></div>
+    <div class="caderno-card" onclick="closeModal();goPage('inbox',document.querySelector('[onclick*=inbox]'))"><div class="caderno-icon">✨</div><div class="caderno-name">Entrada com IA</div></div>
+  </div>`;
+}
+
+// ============================================================
+// API / CHAT / AI
+// ============================================================
+function saveApiKey() {
+  apiKey=document.getElementById('api-key-input').value.trim();
+  localStorage.setItem('sc_api',apiKey);
+  checkApi();
+}
+function checkApi() {
+  const on=apiKey&&apiKey.startsWith('sk-ant');
+  document.getElementById('api-dot').className='api-dot'+(on?' on':'');
+  document.getElementById('api-label').textContent=on?'IA conectada':'API não configurada';
+  if(document.getElementById('api-key-input')) document.getElementById('api-key-input').value=apiKey;
+}
+async function testApi() {
+  document.getElementById('api-test-result').textContent='Testando...';
+  await callClaude('Responda apenas: OK',(r)=>{ document.getElementById('api-test-result').textContent='✅ '+r; });
+}
+async function callClaude(prompt,cb) {
+  if(!apiKey){cb('⚠️ Configure a API Key em Configurações.');return;}
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:4000,messages:[{role:'user',content:prompt}]})});
+    const d=await res.json();
+    if(d.error){cb('❌ '+d.error.message);return;}
+    cb(d.content?.[0]?.text||'Resposta vazia.');
+  } catch(e){cb('Erro: '+e.message);}
+}
+
+function renderMd(t){
+  return t
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<div style="font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin:10px 0 4px;">$1</div>')
+    .replace(/^## (.+)$/gm,'<div style="font-size:14px;font-weight:500;margin:10px 0 4px;">$1</div>')
+    .replace(/^# (.+)$/gm,'<div style="font-size:15px;font-weight:500;color:var(--accent);margin:8px 0 6px;">$1</div>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^[\-\•] (.+)$/gm,'<div style="display:flex;gap:8px;margin:3px 0;"><span style="color:var(--accent);flex-shrink:0;">·</span><span>$1</span></div>')
+    .replace(/\n{2,}/g,'<div style="height:8px;"></div>')
+    .replace(/\n/g,'<br>');
+}
+let chatMsgId=0;
+function addMsg(role,text,loading=false){
+  const el=document.getElementById('chat-msgs');
+  chatMsgId++;
+  const id='cm'+chatMsgId;
+  const content=loading?'<div class="loading"><span></span><span></span><span></span></div>':(role==='ai'?renderMd(text):text);
+  el.innerHTML+='<div class="chat-msg '+role+'" id="'+id+'"><div class="chat-avatar">'+( role==='user'?'👤':'✨')+'</div><div class="chat-bubble">'+content+'</div></div>';
+  el.scrollTop=el.scrollHeight;
+  return id;
+}
+
+async function sendChat() {
+  const inp=document.getElementById('chat-input');
+  const q=inp.value.trim(); if(!q) return;
+  inp.value=''; addMsg('user',q);
+  const lid=addMsg('ai',null,true);
+
+  // Montar contexto completo do segundo cérebro
+  const diarioVida = DB.cadernos.find(c=>c.id==='c0');
+  const diarioTrabalho = DB.cadernos.find(c=>c.id==='c0t');
+
+  const ctxProjetos = DB.projects.map(p=>{
+    const tarefas = p.taskIds.map(tid=>{
+      const t=DB.tasks.find(x=>x.id===tid); if(!t) return '';
+      const subs = t.subtasks.map(s=>`      - [${s.done?'x':' '}] ${s.name}`).join('\n');
+      return `  - [${t.done?'x':' '}] ${t.name} | Prioridade: ${t.priority} | Urgente: ${t.urgent?'Sim':'Nao'} | Prazo: ${t.dueDate||'sem prazo'} | Area: ${t.area}${t.notes?' | Notas: '+t.notes:''}${subs?'\n'+subs:''}`;
+    }).filter(Boolean).join('\n');
+    const notas = p.noteIds.map(nid=>{ const n=DB.notes.find(x=>x.id===nid); return n?`  - ${n.name}: ${n.content}`:'' }).filter(Boolean).join('\n');
+    const recursos = p.resourceIds.map(rid=>{ const r=DB.resources.find(x=>x.id===rid); return r?`  - [${r.type}] ${r.name}: ${r.desc}`:'' }).filter(Boolean).join('\n');
+    return `PROJETO: ${p.name}\nStatus: ${p.status} | Progresso: ${Math.round(p.progress*100)}% | Areas: ${p.areas.join(', ')} | Inicio: ${p.startDate||'?'} | Prazo: ${p.endDate||'?'}\nDescricao: ${p.desc||''}\nTarefas:\n${tarefas||'  (nenhuma)'}\nNotas:\n${notas||'  (nenhuma)'}\nRecursos:\n${recursos||'  (nenhum)'}`;
+  }).join('\n\n');
+
+  const ctxTarefasSoltas = DB.tasks.filter(t=>!t.projectId&&!t.done).map(t=>{
+    const subs = t.subtasks.map(s=>`  - [${s.done?'x':' '}] ${s.name}`).join('\n');
+    return `- [${t.done?'x':' '}] ${t.name} | ${t.priority} | Urgente: ${t.urgent?'Sim':'Nao'} | Prazo: ${t.dueDate||'sem prazo'} | Area: ${t.area}${t.notes?' | '+t.notes:''}${subs?'\n'+subs:''}`;
+  }).join('\n');
+
+  const ctxNotas = DB.notes.map(n=>`- [${n.date}] ${n.name} (${n.tags.join(', ')}): ${n.content}`).join('\n');
+
+  const ctxRecursos = DB.resources.map(r=>{
+    const notasInternas = (r.internalNotes||[]).map(n=>`  - ${n.date}: ${n.text}`).join('\n');
+    return `- [${r.type}] ${r.name} | Area: ${r.area} | ${r.desc}${r.link?' | Link: '+r.link:''}${notasInternas?'\nAnotacoes:\n'+notasInternas:''}`;
+  }).join('\n');
+
+  const ctxCadernos = DB.cadernos.filter(c=>!c.isDiary).map(c=>{
+    const notas = c.noteIds.map(nid=>{ const n=DB.notes.find(x=>x.id===nid); return n?`  - ${n.name}: ${n.content}`:'' }).filter(Boolean).join('\n');
+    return `CADERNO: ${c.icon} ${c.name}\n${notas||'  (sem notas)'}`;
+  }).join('\n\n');
+
+  const ctx=`Você é o assistente pessoal do segundo cérebro de Diogo Pinnho (cineasta, TDAH). Você tem acesso COMPLETO a todo o conteúdo do segundo cérebro. Responda sempre com base nos dados abaixo. Se a informação estiver aqui, responda com precisão.
+
+========= PROJETOS E TAREFAS =========
+${ctxProjetos}
+
+========= TAREFAS AVULSAS (sem projeto) =========
+${ctxTarefasSoltas}
+
+========= TODAS AS NOTAS =========
+${ctxNotas}
+
+========= RECURSOS =========
+${ctxRecursos}
+
+========= CADERNOS TEMÁTICOS =========
+${ctxCadernos}
+
+========= CADERNO DA VIDA (Google Docs) =========
+${(diarioVida&&diarioVida.diaryContent||'Nao sincronizado ainda.')}
+
+========= CADERNO DO TRABALHO (Google Docs) =========
+${(diarioTrabalho&&diarioTrabalho.diaryContent||'Nao sincronizado ainda.')}
+
+========= ÁREAS =========
+${DB.areas.map(a=>a.name).join(', ')}
+
+Responda em português. Use markdown: **negrito**, # títulos, - bullets. Seja direto e preciso. Se não encontrar a informação, diga claramente que não está registrada.
+Pergunta: ${q}`;
+  await callClaude(ctx,text=>{ const el=document.getElementById(lid); if(el) el.querySelector('.chat-bubble').innerHTML=renderMd(text); });
+}
+
+async function categorizeInbox() {
+  const note=document.getElementById('inbox-note').value.trim();
+  if(!note){alert('Digite algo primeiro.');return;}
+  const res=document.getElementById('inbox-result');
+  res.style.display='block';
+  res.innerHTML='<div class="loading"><span></span><span></span><span></span></div> Analisando e salvando automaticamente...';
+  const caderno=document.getElementById('inbox-caderno').value==='vida'?'Caderno da Vida':'Caderno do Trabalho';
+  const projNames=DB.projects.filter(p=>p.status!=='Finalizado').map(p=>p.name);
+  const cadNames=DB.cadernos.map(c=>c.name);
+
+  const prompt=`Você é o assistente do segundo cérebro de Diogo Pinnho. Analise a nota abaixo e retorne um JSON (somente JSON, sem markdown, sem texto fora do JSON) com esta estrutura exata:
+{
+  "tipo": "tarefa" | "nota" | "recurso",
+  "nome": "título curto e claro",
+  "urgente": true | false,
+  "prioridade": "Alta" | "Média" | "Baixa",
+  "area": uma dessas: ${JSON.stringify(AREAS_LIST)},
+  "projeto": nome exato de um desses projetos ou "" se não se aplicar: ${JSON.stringify(projNames)},
+  "caderno": nome exato de um desses cadernos ou "" se não se aplicar: ${JSON.stringify(cadNames)},
+  "conteudo": "conteúdo completo da nota ou descrição da tarefa",
+  "resumo": "uma linha explicando o que foi criado e onde foi salvo"
+}
+Regras:
+- Se mencionar algo a fazer, prazo, "preciso", "tenho que" → tipo: tarefa
+- Se for informação, ideia, aprendizado, insight → tipo: nota
+- Se for livro, vídeo, artigo, link → tipo: recurso
+- Urgente se tiver: "hoje", "agora", "quanto antes", "urgente", "essa semana"
+- Escolha o projeto mais relacionado ao conteúdo
+- Caderno: escolha o mais temático relacionado
+
+Nota (${caderno}): "${note}"`;
+
+  await callClaude(prompt, text => {
+    try {
+      const clean = text.replace(/```json|```/g,'').trim();
+      const data = JSON.parse(clean);
+
+      // Criar o item no banco de dados
+      let created = null;
+      if(data.tipo === 'tarefa') {
+        const proj = DB.projects.find(p=>p.name===data.projeto);
+        const t = {id:uid(),name:data.nome,done:false,urgent:data.urgente||false,priority:data.prioridade||'Média',projectId:proj?proj.id:'',area:data.area||'Pessoal',dueDate:'',subtasks:[],notes:data.conteudo||'',attachments:[]};
+        DB.tasks.push(t);
+        if(proj) proj.taskIds.push(t.id);
+        created = '✅ Tarefa criada';
+      } else if(data.tipo === 'nota') {
+        const cad = DB.cadernos.find(c=>c.name===data.caderno);
+        const proj = DB.projects.find(p=>p.name===data.projeto);
+        const n = {id:uid(),name:data.nome,content:data.conteudo||note,cadernoId:cad?cad.id:'',projectId:proj?proj.id:'',tags:[data.area||'Pessoal'],date:new Date().toISOString().slice(0,10)};
+        DB.notes.push(n);
+        if(cad) cad.noteIds.push(n.id);
+        if(proj) proj.noteIds.push(n.id);
+        created = '📝 Nota criada';
+      } else if(data.tipo === 'recurso') {
+        const r = {id:uid(),name:data.nome,type:'Outro',area:data.area||'Pessoal',link:'',desc:data.conteudo||note,projectIds:[],noteIds:[],internalNotes:[]};
+        DB.resources.push(r);
+        created = '📚 Recurso criado';
+      }
+
+      saveDB(); renderDashboard();
+      res.innerHTML = '<div style="color:var(--green);font-weight:500;margin-bottom:.5rem;">' + (created||'✅ Salvo') + ' automaticamente!</div>'
+        + '<div style="font-size:13px;color:var(--text2);">' + (data.resumo||'') + '</div>'
+        + '<div style="margin-top:.75rem;font-size:12px;color:var(--text3);">Tipo: <strong>' + data.tipo + '</strong> · Área: <strong>' + data.area + '</strong> · Urgente: <strong>' + (data.urgente?'Sim':'Não') + '</strong></div>';
+
+      document.getElementById('inbox-note').value='';
+    } catch(e) {
+      res.innerHTML = '<div style="color:var(--red);">Erro ao processar: ' + e.message + '</div><div style="margin-top:.5rem;font-size:12px;color:var(--text3);">Resposta bruta: ' + text.slice(0,200) + '</div>';
+    }
+  });
+}
+
+
+// doSync movido para Google Config
+
+function updateCounts() {
+  document.getElementById('count-proj').textContent=DB.projects.length;
+  document.getElementById('count-tasks').textContent=DB.tasks.length;
+  document.getElementById('count-res').textContent=DB.resources.length;
+  document.getElementById('count-cad').textContent=DB.cadernos.length;
+}
+
+function resetData() { localStorage.removeItem('sc_db_v2'); location.reload(); }
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  loadDB(); checkApi();
+  const now=new Date();
+  document.getElementById('tb-date').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  renderDashboard();
+  // Verificar token Google salvo (sessão anterior)
+  const savedToken = localStorage.getItem('sc_gtoken');
+  if(savedToken) {
+    googleToken = savedToken;
+    updateGoogleStatus(true);
+  } else {
+    updateGoogleStatus(false);
+  }
+}
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
